@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="10dp"
+    >
+
+    <NumberPicker
+        android:id="@+id/dialog_numberpicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+
+        />
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal"
+                  android:layout_below="@+id/dialog_numberpicker"
+        >
+        <Button android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="set"
+                android:id="@+id/btn_numberpicker_set"
+                android:background="@drawable/bg_material_transparent"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_horizontal"
+              android:paddingLeft="24dp"
+              android:paddingTop="24dp"
+              android:weightSum="1">
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="left"
+        android:paddingRight="24dp"
+        >
+        <TextView
+            android:gravity="center_vertical|left"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/gray_900"
+            android:text="SAMPLE TITLE"
+            android:id="@+id/dialog_okonly_title"
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="24dp"
+        android:layout_gravity="left">
+
+        <ScrollView android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/dialog_okonly_prompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/gray_600"
+                android:text="Do you want to answer that relates the life and death of whole mankind?"
+                />
+
+        </ScrollView>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="right"
+        android:paddingBottom="16dp"
+        android:foregroundGravity="right|center_vertical"
+        android:layout_gravity="right|center_vertical">
+
+
+        <Button
+            android:textColor="@color/material_deep_teal_500"
+            android:textSize="15sp"
+            android:layout_width="70dp"
+            android:layout_height="35dp"
+            android:background="@drawable/bg_material_transparent"
+            android:text="YES"
+            android:id="@+id/btn_dialog_okonly_OK"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
