@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:descendantFocusability="beforeDescendants"
+              android:focusableInTouchMode="true" >
+>
+
+    <ScrollView android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+
+        >
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:elevation="3dp"
+                          android:id="@+id/ll_top_postsomething"
+                          android:orientation="horizontal"
+            >
+
+                <TextView android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:textSize="18sp"
+                          android:paddingBottom="10dp"
+                          android:paddingTop="10dp"
+                          android:gravity="center_vertical"
+                          android:textColor="@color/gray_800"
+                          android:drawableLeft="@drawable/ic_keyboard_arrow_left_black_24dp"
+                          android:text="  Post Something"/>
+
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/gray_300"/>
+
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:layout_weight="0"
+                          android:orientation="vertical"
+            >
+                <View android:layout_width="match_parent" android:layout_marginLeft="15dp" android:layout_marginRight="15dp" android:layout_height="1dp" android:background="@color/gray_300"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:orientation="horizontal">
+
+
+                    <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                              android:hint="What's on your mind?"
+                              android:paddingLeft="15dp"
+                              android:paddingRight="15dp"
+                              android:paddingTop="10dp"
+                              android:paddingBottom="10dp"
+                              android:textSize="16sp"
+                              android:maxLines="100"
+                              android:layout_weight="1"
+                              android:id="@+id/edtPostSomethingContent"
+                              android:background="@color/transparent" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_marginLeft="15dp" android:layout_marginRight="15dp" android:layout_height="1dp" android:background="@color/gray_300"/>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                  android:orientation="vertical"
+                    >
+        <View android:layout_width="match_parent" android:layout_marginLeft="15dp" android:layout_marginRight="15dp" android:layout_height="1dp" android:background="@color/gray_300"/>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp"
+                android:background="@drawable/bg_material_transparent"
+                android:id="@+id/ll_postnow"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal" >
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:clickable="false"
+                    android:background="#0000"
+                    android:src="@drawable/ic_create_black_24dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@color/gray_500"
+                    android:paddingLeft="3dp"
+                    android:text="POST NOW" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

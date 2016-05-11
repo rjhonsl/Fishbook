@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -49,7 +50,7 @@ import java.util.List;
 
 /**
  * Created by rjhonsl on 7/24/2015.
- */
+ **/
 public class Helper {
 
 
@@ -61,94 +62,95 @@ public class Helper {
     }
 
 
-    public static void toastShort(Activity context, String msg){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), msg, Snackbar.LENGTH_SHORT)
-                    .setActionTextColor(context.getResources().getColor(R.color.gray_100));
 
-            View view = snackbar.getView();
-            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-            tv.setTextColor(context.getResources().getColor(R.color.gray_100));
-            tv.setMaxLines(5);
-            snackbar.show();
-        }else{
-            LayoutInflater inflater = context.getLayoutInflater();
-            final View layout = inflater.inflate(R.layout.toast,
-                    (ViewGroup) context.findViewById(R.id.toast_layout_root));
+    public static class toast{
 
-            TextView text = (TextView) layout.findViewById(R.id.text);
-            Typeface font = Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
-            text.setTypeface(font);
-            text.setText(msg);
+        public static void short_(Activity context, String msg){
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), msg, Snackbar.LENGTH_SHORT)
+                        .setActionTextColor(context.getResources().getColor(R.color.gray_100));
 
-            Toast toast = new Toast(context.getApplicationContext());
-            toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
-            toast.setDuration(Toast.LENGTH_SHORT);
-            toast.setMargin(0, 0);
-            toast.setView(layout);
+                View view = snackbar.getView();
+                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setTextColor(context.getResources().getColor(R.color.gray_100));
+                tv.setMaxLines(5);
+                snackbar.show();
+            }else{
+                LayoutInflater inflater = context.getLayoutInflater();
+                final View layout = inflater.inflate(R.layout.toast,
+                        (ViewGroup) context.findViewById(R.id.toast_layout_root));
 
-            toast.show();
-        }
+                TextView text = (TextView) layout.findViewById(R.id.text);
+                Typeface font = Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
+                text.setTypeface(font);
+                text.setText(msg);
 
-    }
+                Toast toast = new Toast(context.getApplicationContext());
+                toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                toast.setDuration(Toast.LENGTH_SHORT);
+                toast.setMargin(0, 0);
+                toast.setView(layout);
 
-    public static void setCursorOnEnd(EditText edt) {
-        edt.setSelection(edt.getText().length());
-    }
-
-    public static void toastLong(Activity context, String msg){
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-
-            Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), msg, Snackbar.LENGTH_SHORT)
-                    .setActionTextColor(context.getResources().getColor(R.color.gray_100));
-
-            View view = snackbar.getView();
-            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-            tv.setTextColor(context.getResources().getColor(R.color.gray_100));
-            tv.setMaxLines(5);
-            snackbar.show();
-
-        }else{
-
-            LayoutInflater inflater = context.getLayoutInflater();
-            View layout = inflater.inflate(R.layout.toast,
-                    (ViewGroup) context.findViewById(R.id.toast_layout_root));
-
-            TextView text = (TextView) layout.findViewById(R.id.text);
-            Typeface font = Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
-            text.setTypeface(font);
-            text.setText(msg);
-
-            Toast toast = new Toast(context.getApplicationContext());
-            toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
-            toast.setMargin(0, 0);
-            toast.setDuration(Toast.LENGTH_LONG);
-            toast.setView(layout);
-            toast.show();
-
-        }
-    }
-
-    public static void toastIndefinite(Activity context, String msg){
-
-        final Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), msg, Snackbar.LENGTH_INDEFINITE)
-                .setActionTextColor(context.getResources().getColor(R.color.gray_100));
-
-        View view = snackbar.getView();
-        TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-        tv.setTextColor(context.getResources().getColor(R.color.gray_100));
-        tv.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                snackbar.dismiss();
-                return false;
+                toast.show();
             }
-        });
-        tv.setMaxLines(5);
-        snackbar.show();
+
+        }
+
+        public static void long_(Activity context, String msg){
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+
+                Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), msg, Snackbar.LENGTH_SHORT)
+                        .setActionTextColor(context.getResources().getColor(R.color.gray_100));
+
+                View view = snackbar.getView();
+                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setTextColor(context.getResources().getColor(R.color.gray_100));
+                tv.setMaxLines(5);
+                snackbar.show();
+
+            }else{
+
+                LayoutInflater inflater = context.getLayoutInflater();
+                View layout = inflater.inflate(R.layout.toast,
+                        (ViewGroup) context.findViewById(R.id.toast_layout_root));
+
+                TextView text = (TextView) layout.findViewById(R.id.text);
+                Typeface font = Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
+                text.setTypeface(font);
+                text.setText(msg);
+
+                Toast toast = new Toast(context.getApplicationContext());
+                toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                toast.setMargin(0, 0);
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
+
+            }
+        }
+
+        public static void indefinite(Activity context, String msg){
+
+            final Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), msg, Snackbar.LENGTH_INDEFINITE)
+                    .setActionTextColor(context.getResources().getColor(R.color.gray_100));
+
+            View view = snackbar.getView();
+            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setTextColor(context.getResources().getColor(R.color.gray_100));
+            tv.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    snackbar.dismiss();
+                    return false;
+                }
+            });
+            tv.setMaxLines(5);
+            snackbar.show();
 
 
+
+        }
 
     }
 
@@ -555,6 +557,20 @@ public class Helper {
                 }
             }
             return  initialValue;
+        }
+
+        public static void setCursorOnEnd(EditText edt) {
+            edt.setSelection(edt.getText().length());
+        }
+
+        public boolean isPackageInstalled(String packagename, Context context) {
+            PackageManager pm = context.getPackageManager();
+            try {
+                pm.getPackageInfo(packagename, PackageManager.GET_ACTIVITIES);
+                return true;
+            } catch (PackageManager.NameNotFoundException e) {
+                return false;
+            }
         }
 
     }

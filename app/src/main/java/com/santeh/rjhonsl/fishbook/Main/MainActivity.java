@@ -1,22 +1,21 @@
 package com.santeh.rjhonsl.fishbook.Main;
 
 import android.app.Activity;
-import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -30,8 +29,12 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import com.santeh.rjhonsl.fishbook.BuildConfig;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.santeh.rjhonsl.fishbook.R;
+import com.santeh.rjhonsl.fishbook.Utils.FusedLocation;
+import com.santeh.rjhonsl.fishbook.Utils.Helper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -58,6 +61,7 @@ public class MainActivity  extends AppCompatActivity {
     LinearLayout llbottomwrapper;
 
     FusedLocation fusedLocation;
+    RequestParams params;
     Boolean isBottomAnimating = false;
     Boolean isFabSelected = false;
     String currentUploadID = null;
@@ -68,16 +72,16 @@ public class MainActivity  extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-        activity = ActivityFB_Main.this;
-        context = ActivityFB_Main.this;
+        activity = this;
+        context = MainActivity.this;
+
 
         loading = new ProgressDialog(context);
         loading.setIndeterminate(true);
         loading.setCancelable(false);
         loading.setMessage("Uploading");
-        Initializer initUpload = new Initializer();
-        initUpload.onCreate();
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar2);
         assert myToolbar != null;
@@ -139,9 +143,9 @@ public class MainActivity  extends AppCompatActivity {
 //                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 //                    public boolean onMenuItemClick(MenuItem item) {
 //                        if (item.getItemId()== R.id.reportPostAsSpam){
-//                            Helper.toastShort(activity,"Reported as spam");
+//                            Helper.short_(activity,"Reported as spam");
 //                        }else if (item.getItemId()== R.id.copyPostText){
-//                            Helper.toastShort(activity,"Post Copied");
+//                            Helper.short_(activity,"Post Copied");
 //                        }
 //                        return true;
 //                    }
@@ -172,7 +176,7 @@ public class MainActivity  extends AppCompatActivity {
 //            @Override
 //            public void onClick(View textView) {
 ////                startActivity(new Intent(MyActivity.this, NextActivity.class));
-//                Helper.toastShort(activity, "hashtag: " + finalHashtag);
+//                Helper.short_(activity, "hashtag: " + finalHashtag);
 //            }
 //            @Override
 //            public void updateDrawState(TextPaint ds) {
@@ -218,9 +222,9 @@ public class MainActivity  extends AppCompatActivity {
 //                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 //                    public boolean onMenuItemClick(MenuItem item) {
 //                        if (item.getItemId()== R.id.reportPostAsSpam){
-//                            Helper.toastShort(activity,"Reported as spam");
+//                            Helper.short_(activity,"Reported as spam");
 //                        }else if (item.getItemId()== R.id.copyPostText){
-//                            Helper.toastShort(activity,"Post Copied");
+//                            Helper.short_(activity,"Post Copied");
 //                        }
 //
 //                        return true;
@@ -243,9 +247,9 @@ public class MainActivity  extends AppCompatActivity {
 //                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 //                    public boolean onMenuItemClick(MenuItem item) {
 //                        if (item.getItemId()== R.id.reportPostAsSpam){
-//                            Helper.toastShort(activity,"Reported as spam");
+//                            Helper.short_(activity,"Reported as spam");
 //                        }else if (item.getItemId()== R.id.copyPostText){
-//                            Helper.toastShort(activity,"Post Copied");
+//                            Helper.short_(activity,"Post Copied");
 //                        }
 //                        return true;
 //                    }
@@ -332,6 +336,7 @@ public class MainActivity  extends AppCompatActivity {
             }
         });
 
+        assert lluploadPhoto != null;
         lluploadPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -345,6 +350,7 @@ public class MainActivity  extends AppCompatActivity {
         });
 
 
+        assert llpostSomething != null;
         llpostSomething.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -353,10 +359,10 @@ public class MainActivity  extends AppCompatActivity {
             }
         });
 
+        assert lluploadFile != null;
         lluploadFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
 
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -492,7 +498,7 @@ public class MainActivity  extends AppCompatActivity {
 
 
             }else if (requestCode == SELECT_FILE) {
-                Helper.toastIndefinite(activity, "path:"+ "" + "" +
+                Helper.toast.indefinite(activity, "path:"+ "" + "" +
 //                        "\nfile name:"+ filename +"" +
 //                        "\nfile type:"+ filetype +"" +
                         "");
@@ -511,7 +517,7 @@ public class MainActivity  extends AppCompatActivity {
 //////                String filename = fullpath.substring(fullpath.lastIndexOf("/")+1);
 //////                String filetype = fullpath.substring(fullpath.lastIndexOf(".")+1);
 //
-//                Helper.toastIndefinite(activity, "path:"+ FileUtils.getPath(context, uri) + "" +
+//                Helper.indefinite(activity, "path:"+ FileUtils.getPath(context, uri) + "" +
 ////                        "\nfile name:"+ filename +"" +
 ////                        "\nfile type:"+ filetype +"" +
 //                        "");
@@ -546,11 +552,12 @@ public class MainActivity  extends AppCompatActivity {
             @Override
             protected void onPostExecute(String msg) {
                 loading.setMessage("Uploading...");
+                params = new RequestParams();
                 params.put("image", encodedImage);
                 params.put("imagename", selectedFilePath);
                 params.put("username", "tsraqua");
                 params.put("password", "tsraqua");
-                params.put("deviceid", Helper.getMacAddress(context));
+                params.put("deviceid", Helper.getDeviceInfo.getMacAddress(context));
                 params.put("userid",  "11");
                 params.put("userlvl", "4");
                 // Trigger Image upload
@@ -610,7 +617,6 @@ public class MainActivity  extends AppCompatActivity {
     }
 
 
-
     public File getPath(Uri uri) {
         return new File(uri.getPath());
     }
@@ -618,45 +624,38 @@ public class MainActivity  extends AppCompatActivity {
 
 
 
-    public class Initializer extends Application {
+//    public class Initializer extends Application {
+//
+//        @Override
+//        public void onCreate() {
+//            super.onCreate();
+//            // setup the broadcast action namespace string which will
+//            // be used to notify upload status.
+//            // Gradle automatically generates proper variable as below.
+//            UploadService.HTTP_STACK = new OkHttpStack();
+//            UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;
+//        }
+//    }
 
-        @Override
-        public void onCreate() {
-            super.onCreate();
-            // setup the broadcast action namespace string which will
-            // be used to notify upload status.
-            // Gradle automatically generates proper variable as below.
-            UploadService.HTTP_STACK = new OkHttpStack();
-            UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;
-        }
-    }
 
+//    public void uploadMultipart(final Context context, String AbsFilePath) {
+//        try {
+//            currentUploadID =
+//                    new MultipartUploadRequest(context, "http://www.santeh-webservice.com/uploadedfiles/")
+//                            .addFileToUpload(selectedFilePath, "your-param-name")
+//                            .addParameter("filename", selectedFile.getName())
+//                            .addParameter("username", "tsraqua")
+//                            .addParameter("password", "tsraqua")
+//                            .addParameter("deviceid", Helper.getMacAddress(context))
+//                            .addParameter("userid",  "11")
+//                            .addParameter("userlvl", "4")
+//                            .setNotificationConfig(new UploadNotificationConfig())
+//                            .setMaxRetries(2)
+//                            .startUpload();
+//        } catch (Exception exc) {
+//            Log.e("AndroidUploadService", exc.getMessage(), exc);
+//        }
+//    }
 
-    public void uploadMultipart(final Context context, String AbsFilePath) {
-        try {
-            currentUploadID =
-                    new MultipartUploadRequest(context, "http://www.santeh-webservice.com/uploadedfiles/")
-                            .addFileToUpload(selectedFilePath, "your-param-name")
-                            .addParameter("filename", selectedFile.getName())
-                            .addParameter("username", "tsraqua")
-                            .addParameter("password", "tsraqua")
-                            .addParameter("deviceid", Helper.getMacAddress(context))
-                            .addParameter("userid",  "11")
-                            .addParameter("userlvl", "4")
-                            .setNotificationConfig(new UploadNotificationConfig())
-                            .setMaxRetries(2)
-                            .startUpload();
-        } catch (Exception exc) {
-            Log.e("AndroidUploadService", exc.getMessage(), exc);
-        }
-    }
-
-//    params.put("image", encodedImage);
-//    params.put("imagename", selectedFilePath);
-//    params.put("username", "tsraqua");
-//    params.put("password", "tsraqua");
-//    params.put("deviceid", Helper.getMacAddress(context));
-//    params.put("userid",  "11");
-//    params.put("userlvl", "4");
 
 }

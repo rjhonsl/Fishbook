@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:androclass="http://schemas.android.com/apk/res/android"
+      xmlns:android="http://schemas.android.com/tools"
+>
+
+    <item
+        androclass:id="@+id/reportPostAsSpam"
+        android:title="One"
+        androclass:title="Report as Spam"/>
+
+    <item
+        androclass:id="@+id/copyPostText"
+        android:title="Two"
+        androclass:title="Copy Post"
+    />
+
+
+</menu>

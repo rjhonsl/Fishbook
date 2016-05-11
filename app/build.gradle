@@ -29,4 +29,5 @@ dependencies {
     compile 'net.gotev:uploadservice:2.1'
     compile 'net.gotev:uploadservice-okhttp:2.1'
     compile 'com.android.support:design:23.3.0'
+    compile files('libs/android-async-http-1.4.4.jar')
 }

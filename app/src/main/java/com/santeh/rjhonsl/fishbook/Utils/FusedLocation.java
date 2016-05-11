@@ -1,9 +1,12 @@
 package com.santeh.rjhonsl.fishbook.Utils;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,7 +33,7 @@ public class FusedLocation implements GoogleApiClient.ConnectionCallbacks, Googl
     private Activity fixActivity;
     private LatLng latLng;
 
-    public FusedLocation(Context context, Activity activity){
+    public FusedLocation(Context context, Activity activity) {
 
         fixContext = context;
         fixActivity = activity;
@@ -54,6 +57,7 @@ public class FusedLocation implements GoogleApiClient.ConnectionCallbacks, Googl
         }
 
     }
+
     public void disconnectFromApiClient() {
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
@@ -83,7 +87,17 @@ public class FusedLocation implements GoogleApiClient.ConnectionCallbacks, Googl
     }
 
     @Override
-    public  void onConnected(Bundle bundle) {
+    public void onConnected(Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(fixContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(fixContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
 //        startLocationUpdates();
