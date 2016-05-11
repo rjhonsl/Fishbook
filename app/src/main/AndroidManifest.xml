@@ -38,9 +38,11 @@
         </activity>
 
         <activity android:name=".Main.Activity_PostText"
-            android:label="Post"
-        >
+            android:label="Post Text" >
+        </activity>
 
+        <activity android:name=".Main.Activity_PostImage"
+            android:label="Post Image" >
         </activity>
     </application>
 

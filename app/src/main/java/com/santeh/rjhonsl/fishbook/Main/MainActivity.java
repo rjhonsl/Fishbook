@@ -6,16 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -27,18 +24,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.santeh.rjhonsl.fishbook.R;
 import com.santeh.rjhonsl.fishbook.Utils.FusedLocation;
-import com.santeh.rjhonsl.fishbook.Utils.Helper;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 
 public class MainActivity  extends AppCompatActivity {
 
@@ -340,12 +331,9 @@ public class MainActivity  extends AppCompatActivity {
         lluploadPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_PICK);
-                intent.addCategory(Intent.CATEGORY_DEFAULT);
-                startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), SELECT_PICTURE);
+                startActivity(new Intent(activity, Activity_PostImage.class));
+
+
             }
         });
 
@@ -480,146 +468,146 @@ public class MainActivity  extends AppCompatActivity {
 
 
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            if (requestCode == SELECT_PICTURE) { //
-                Uri selectedFileUri = data.getData();
-                Uri filePath = data.getData();
-
-                File file = getPath(selectedFileUri);
-                selectedFilePath = file.getAbsoluteFile().getName();
-
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedFileUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                encodeImagetoString(bitmap);
-
-
-            }else if (requestCode == SELECT_FILE) {
-                Helper.toast.indefinite(activity, "path:"+ "" + "" +
-//                        "\nfile name:"+ filename +"" +
-//                        "\nfile type:"+ filetype +"" +
-                        "");
-            }
-
-
-
-//            if(requestCode == SELECT_FILE){
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (resultCode == RESULT_OK) {
+//            if (requestCode == SELECT_PICTURE) { //
+//                Uri selectedFileUri = data.getData();
+//                Uri filePath = data.getData();
+//
+//                File file = getPath(selectedFileUri);
+//                selectedFilePath = file.getAbsoluteFile().getName();
+//
+//                try {
+//                    bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedFileUri);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                encodeImagetoString(bitmap);
 //
 //
-//
-////                Uri uri = data.getData();
-////                fileURI = uri;
-////                String fullpath = FileUtils.getPath(context, uri);
-////                assert fullpath != null;
-//////                String filename = fullpath.substring(fullpath.lastIndexOf("/")+1);
-//////                String filetype = fullpath.substring(fullpath.lastIndexOf(".")+1);
-//
-//                Helper.indefinite(activity, "path:"+ FileUtils.getPath(context, uri) + "" +
+//            }else if (requestCode == SELECT_FILE) {
+//                Helper.toast.indefinite(activity, "path:"+ "" + "" +
 ////                        "\nfile name:"+ filename +"" +
 ////                        "\nfile type:"+ filetype +"" +
 //                        "");
-////                new UploadFileAsync().execute("");
-//
 //            }
-        }
+//
+//
+//
+////            if(requestCode == SELECT_FILE){
+////
+////
+////
+//////                Uri uri = data.getData();
+//////                fileURI = uri;
+//////                String fullpath = FileUtils.getPath(context, uri);
+//////                assert fullpath != null;
+////////                String filename = fullpath.substring(fullpath.lastIndexOf("/")+1);
+////////                String filetype = fullpath.substring(fullpath.lastIndexOf(".")+1);
+////
+////                Helper.indefinite(activity, "path:"+ FileUtils.getPath(context, uri) + "" +
+//////                        "\nfile name:"+ filename +"" +
+//////                        "\nfile type:"+ filetype +"" +
+////                        "");
+//////                new UploadFileAsync().execute("");
+////
+////            }
+//        }
+//
+//
+//    }
 
 
-    }
 
 
 
-
-
-    public void encodeImagetoString(final Bitmap bmp ) {
-        new AsyncTask<Void, Void, String>() {
-
-            protected void onPreExecute() {
-                loading.show();
-            }
-
-            @Override
-            protected String doInBackground(Void... params) {
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bmp.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-                byte[] imageBytes = stream.toByteArray();
-                encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-                return "";
-            }
-
-            @Override
-            protected void onPostExecute(String msg) {
-                loading.setMessage("Uploading...");
-                params = new RequestParams();
-                params.put("image", encodedImage);
-                params.put("imagename", selectedFilePath);
-                params.put("username", "tsraqua");
-                params.put("password", "tsraqua");
-                params.put("deviceid", Helper.getDeviceInfo.getMacAddress(context));
-                params.put("userid",  "11");
-                params.put("userlvl", "4");
-                // Trigger Image upload
-                makeHTTPCall();
-            }
-        }.execute(null, null, null);
-    }
-
-
-    public void makeHTTPCall() {
-        loading.setMessage("Invoking Php");
-        AsyncHttpClient client = new AsyncHttpClient();
-        // Don't forget to change the IP address to your LAN address. Port no as well.
-        client.post("http://www.santeh-webservice.com/images/androidimageupload_fishbook/feedphoto.php",
-                params, new AsyncHttpResponseHandler() {
-                    // When the response returned by REST has Http
-                    // response code '200'
-                    @Override
-                    public void onSuccess(String response) {
-                        // Hide Progress Dialog
-                        loading.hide();
-                        Toast.makeText(getApplicationContext(), response,
-                                Toast.LENGTH_LONG).show();
-                    }
-
-                    // When the response returned by REST has Http
-                    // response code other than '200' such as '404',
-                    // '500' or '403' etc
-                    @Override
-                    public void onFailure(int statusCode, Throwable error,
-                                          String content) {
-                        // Hide Progress Dialog
-                        loading.hide();
-                        // When Http response code is '404'
-                        if (statusCode == 404) {
-                            Toast.makeText(getApplicationContext(),
-                                    "Requested resource not found",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                        // When Http response code is '500'
-                        else if (statusCode == 500) {
-                            Toast.makeText(getApplicationContext(),
-                                    "Something went wrong at server end",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                        // When Http response code other than 404, 500
-                        else {
-                            Toast.makeText(
-                                    getApplicationContext(),
-                                    "Error Occured n Most Common Error: n1. Device not connected to Internetn2. Web App is not deployed in App servern3. App server is not runningn HTTP Status code : "
-                                            + error.toString() + " "
-                                            + statusCode, Toast.LENGTH_LONG)
-                                    .show();
-                        }
-                    }
-                });
-    }
-
-
-    public File getPath(Uri uri) {
-        return new File(uri.getPath());
-    }
+//    public void encodeImagetoString(final Bitmap bmp ) {
+//        new AsyncTask<Void, Void, String>() {
+//
+//            protected void onPreExecute() {
+//                loading.show();
+//            }
+//
+//            @Override
+//            protected String doInBackground(Void... params) {
+//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                bmp.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+//                byte[] imageBytes = stream.toByteArray();
+//                encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+//                return "";
+//            }
+//
+//            @Override
+//            protected void onPostExecute(String msg) {
+//                loading.setMessage("Uploading...");
+//                params = new RequestParams();
+//                params.put("image", encodedImage);
+//                params.put("imagename", selectedFilePath);
+//                params.put("username", "tsraqua");
+//                params.put("password", "tsraqua");
+//                params.put("deviceid", Helper.getDeviceInfo.getMacAddress(context));
+//                params.put("userid",  "11");
+//                params.put("userlvl", "4");
+//                // Trigger Image upload
+//                makeHTTPCall();
+//            }
+//        }.execute(null, null, null);
+//    }
+//
+//
+//    public void makeHTTPCall() {
+//        loading.setMessage("Invoking Php");
+//        AsyncHttpClient client = new AsyncHttpClient();
+//        // Don't forget to change the IP address to your LAN address. Port no as well.
+//        client.post("http://www.santeh-webservice.com/images/androidimageupload_fishbook/feedphoto.php",
+//                params, new AsyncHttpResponseHandler() {
+//                    // When the response returned by REST has Http
+//                    // response code '200'
+//                    @Override
+//                    public void onSuccess(String response) {
+//                        // Hide Progress Dialog
+//                        loading.hide();
+//                        Toast.makeText(getApplicationContext(), response,
+//                                Toast.LENGTH_LONG).show();
+//                    }
+//
+//                    // When the response returned by REST has Http
+//                    // response code other than '200' such as '404',
+//                    // '500' or '403' etc
+//                    @Override
+//                    public void onFailure(int statusCode, Throwable error,
+//                                          String content) {
+//                        // Hide Progress Dialog
+//                        loading.hide();
+//                        // When Http response code is '404'
+//                        if (statusCode == 404) {
+//                            Toast.makeText(getApplicationContext(),
+//                                    "Requested resource not found",
+//                                    Toast.LENGTH_LONG).show();
+//                        }
+//                        // When Http response code is '500'
+//                        else if (statusCode == 500) {
+//                            Toast.makeText(getApplicationContext(),
+//                                    "Something went wrong at server end",
+//                                    Toast.LENGTH_LONG).show();
+//                        }
+//                        // When Http response code other than 404, 500
+//                        else {
+//                            Toast.makeText(
+//                                    getApplicationContext(),
+//                                    "Error Occured n Most Common Error: n1. Device not connected to Internetn2. Web App is not deployed in App servern3. App server is not runningn HTTP Status code : "
+//                                            + error.toString() + " "
+//                                            + statusCode, Toast.LENGTH_LONG)
+//                                    .show();
+//                        }
+//                    }
+//                });
+//    }
+//
+//
+//    public File getPath(Uri uri) {
+//        return new File(uri.getPath());
+//    }
 
 
 
