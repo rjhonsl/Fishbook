@@ -70,6 +70,7 @@ public class Activity_PostImage extends AppCompatActivity {
         imgPreview = (ImageView) findViewById(R.id.img_preview);
         llAddImage = (RelativeLayout) findViewById(R.id.llAddImage);
         llPostImageNow = (LinearLayout) findViewById(R.id.ll_postImageNow);
+        llPostImageNow.setEnabled(false);
         btnRemoveImage = (ImageButton) findViewById(R.id.btn_removeImage);
         edtImageDesc = (EditText) findViewById(R.id.edtImageDescription);
 
@@ -149,6 +150,7 @@ public class Activity_PostImage extends AppCompatActivity {
 
                 File file = getPath(selectedFileUri);
                 selectedFilePath = file.getAbsoluteFile().getName();
+                Helper.toast.indefinite(activity, ""+data.getData().getPath().length() + " " + data.getData().getPath().);
 
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedFileUri);
