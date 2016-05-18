@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -26,6 +27,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.santeh.rjhonsl.fishbook.R;
+import com.santeh.rjhonsl.fishbook.Utils.FusedLocation;
 import com.santeh.rjhonsl.fishbook.Utils.Helper;
 
 import java.io.ByteArrayOutputStream;
@@ -39,7 +41,7 @@ public class Activity_PostImage extends AppCompatActivity {
 
 
     RelativeLayout llAddImage;
-    LinearLayout llPostImageNow;
+    LinearLayout llPostImageNow, llTopPostImage;
     int SELECT_PICTURE = 0;
     ProgressDialog loading;
     String encodedImage;
@@ -54,6 +56,8 @@ public class Activity_PostImage extends AppCompatActivity {
     EditText edtImageDesc;
     boolean isPictureSelected = false;
 
+    FusedLocation fusedLocation;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +65,8 @@ public class Activity_PostImage extends AppCompatActivity {
         activity = this;
         context = Activity_PostImage.this;
 
+        fusedLocation = new FusedLocation(context, activity);
+        fusedLocation.connectToApiClient();
 
         loading = new ProgressDialog(context);
         loading.setIndeterminate(true);
@@ -70,6 +76,7 @@ public class Activity_PostImage extends AppCompatActivity {
         imgPreview = (ImageView) findViewById(R.id.img_preview);
         llAddImage = (RelativeLayout) findViewById(R.id.llAddImage);
         llPostImageNow = (LinearLayout) findViewById(R.id.ll_postImageNow);
+        llTopPostImage = (LinearLayout) findViewById(R.id.ll_top_postimage);
         llPostImageNow.setEnabled(false);
         btnRemoveImage = (ImageButton) findViewById(R.id.btn_removeImage);
         edtImageDesc = (EditText) findViewById(R.id.edtImageDescription);
@@ -94,6 +101,13 @@ public class Activity_PostImage extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        llTopPostImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
@@ -150,7 +164,8 @@ public class Activity_PostImage extends AppCompatActivity {
 
                 File file = getPath(selectedFileUri);
                 selectedFilePath = file.getAbsoluteFile().getName();
-                Helper.toast.indefinite(activity, ""+data.getData().getPath().length() + " " + data.getData().getPath().);
+                String filesize = Helper.fileInfo.getSize(data, context);
+                Helper.toast.indefinite(activity, "Length: "+Helper.fileInfo.getSize(data, context) + " " +data.getData().getPath().length()+ "\nName: " + Helper.fileInfo.getName(data, context));
 
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedFileUri);
@@ -159,7 +174,7 @@ public class Activity_PostImage extends AppCompatActivity {
                 }
                 imgPreview.setImageBitmap(bitmap);
 
-                encodeImagetoString(bitmap);
+                encodeImagetoString(bitmap, filesize);
 
 
             }
@@ -177,9 +192,7 @@ public class Activity_PostImage extends AppCompatActivity {
         }
     }
 
-
-
-    public void encodeImagetoString(final Bitmap bmp ) {
+    public void encodeImagetoString(final Bitmap bmp, final String filesize) {
         new AsyncTask<Void, Void, String>() {
 
             protected void onPreExecute() {
@@ -188,10 +201,30 @@ public class Activity_PostImage extends AppCompatActivity {
 
             @Override
             protected String doInBackground(Void... params) {
+                double quality = 100;
+                int size = Integer.valueOf(filesize);
+                double requiredSize = 300000;
+                double reducedSize = size;
+
+                while (reducedSize > requiredSize) {
+                    reducedSize = size * (quality / 100);
+                    quality = quality - 1;
+                }
+                Log.d("Image", "rsize: " + reducedSize + "  quality: " + quality);
+
+
+                Double Dquality = Double.valueOf(quality);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bmp.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                bmp.compress(Bitmap.CompressFormat.JPEG, Dquality.intValue(), stream);
                 byte[] imageBytes = stream.toByteArray();
+
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
                 return "";
             }
 
@@ -207,14 +240,33 @@ public class Activity_PostImage extends AppCompatActivity {
                 params.put("userid",  "11");
                 params.put("userlvl", "4");
 
+                params.put("content_type", MainActivity.CONTENT_IMAGE + "");
+                params.put("content_desc", edtImageDesc.getText().toString() + "");
+                params.put("content_fetchAt", System.currentTimeMillis() + "");
+
+
+                String sqlString = "INSERT INTO `feed_main_` " +
+                        "(`feed_main_id`, `feed_main_uid`, `feed_main_date`, `feed_main_loclat`, `feed_main_loclong`, `feed_main_fetch_at`, `feed_main_seen_state`) " +
+                        "VALUES " +
+                        "(NULL, '11', " +
+                        "'"+System.currentTimeMillis()+"', " +
+                        "'"+fusedLocation.getLastKnowLocation().latitude+"', " +
+                        "'"+fusedLocation.getLastKnowLocation().latitude+"', '0', '0');";
+
+
+                params.put("sql", sqlString);
+
             }
         }.execute(null, null, null);
     }
 
 
     public void makeHTTPCall() {
-        loading.setMessage("Uploading image...");
+        final int DEFAULT_TIMEOUT = 20 * 1000;
         AsyncHttpClient client = new AsyncHttpClient();
+        client.setTimeout(DEFAULT_TIMEOUT);
+
+        loading.setMessage("Uploading image...");
         // Don't forget to change the IP address to your LAN address. Port no as well.
         client.post("http://www.santeh-webservice.com/images/androidimageupload_fishbook/feedphoto.php",
                 params, new AsyncHttpResponseHandler() {
@@ -224,8 +276,11 @@ public class Activity_PostImage extends AppCompatActivity {
                     public void onSuccess(String response) {
                         // Hide Progress Dialog
                         loading.hide();
-                        Toast.makeText(getApplicationContext(), "Upload successful: " + response,
-                                Toast.LENGTH_LONG).show();
+
+                        finish();
+                        Toast.makeText(context, "Image has been uploaded", Toast.LENGTH_SHORT).show();
+                        Helper.toast.long_(activity, "Image has been uploaded.");
+                        Log.d("Response of upload", response);
                     }
 
                     // When the response returned by REST has Http
@@ -238,24 +293,16 @@ public class Activity_PostImage extends AppCompatActivity {
                         loading.hide();
                         // When Http response code is '404'
                         if (statusCode == 404) {
-                            Toast.makeText(getApplicationContext(),
-                                    "Requested resource not found",
-                                    Toast.LENGTH_LONG).show();
+                            Helper.toast.long_(activity, "Upload failed. Please try again.");
                         }
                         // When Http response code is '500'
                         else if (statusCode == 500) {
-                            Toast.makeText(getApplicationContext(),
-                                    "Something went wrong at server end",
-                                    Toast.LENGTH_LONG).show();
+                            Helper.toast.long_(activity, "Server didn't respond. Please try again.");
                         }
                         // When Http response code other than 404, 500
                         else {
-                            Toast.makeText(
-                                    getApplicationContext(),
-                                    "Error Occured n Most Common Error: n1. Device not connected to Internetn2. Web App is not deployed in App servern3. App server is not runningn HTTP Status code : "
-                                            + error.toString() + " "
-                                            + statusCode, Toast.LENGTH_LONG)
-                                    .show();
+                            Helper.toast.long_(activity, "Upload failed. Please try again.");
+//                            Helper.dialogBox.okOnly_Scrolling(activity, "Upload Error", "Error:" + error.toString() + " ", "OK", R.color.red );
                         }
                     }
                 });

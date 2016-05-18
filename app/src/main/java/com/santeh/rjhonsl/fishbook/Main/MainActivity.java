@@ -4,58 +4,67 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
 
-import com.loopj.android.http.RequestParams;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.santeh.rjhonsl.fishbook.APIs.MyVolleyAPI;
+import com.santeh.rjhonsl.fishbook.Adapters.RecyclerViewAdapter;
 import com.santeh.rjhonsl.fishbook.R;
 import com.santeh.rjhonsl.fishbook.Utils.FusedLocation;
+import com.santeh.rjhonsl.fishbook.Utils.Helper;
+import com.santeh.rjhonsl.fishbook.Utils.NewsFeedsParser;
+import com.santeh.rjhonsl.fishbook.Utils.VarFishbook;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity  extends AppCompatActivity {
 
+
     Activity activity;
     Context context;
-    ImageView imageview;
-    ImageButton btnPopupOptions;
-    String encodedImage;
-    ScrollView scrollView;
-    ListView lvFeeds;
-    Bitmap bitmap;
-    File selectedFile;
-    Uri fileURI;
+//    ListView lvNewsFeeds;
+    RecyclerView recyclerView;
+    RecyclerViewAdapter rcAdapter;
+
     private static final int SELECT_PICTURE = 1;
     private static final int SELECT_FILE = 2;
-    private String selectedFilePath;
 
     ProgressDialog loading;
     FloatingActionButton fabAddPost;
     LinearLayout llbottomwrapper;
 
     FusedLocation fusedLocation;
-    RequestParams params;
     Boolean isBottomAnimating = false;
     Boolean isFabSelected = false;
     String currentUploadID = null;
+
+    List<VarFishbook> newsFeedList;
+    public static int CONTENT_TEXT = 0;
+    public static int CONTENT_IMAGE = 1;
+    public static int CONTENT_FILE = 2;
+    public static int CONTENT_EVENT = 3;
+
     private int serverResponseCode;
 
 
@@ -67,7 +76,6 @@ public class MainActivity  extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         activity = this;
         context = MainActivity.this;
-
 
         loading = new ProgressDialog(context);
         loading.setIndeterminate(true);
@@ -81,6 +89,7 @@ public class MainActivity  extends AppCompatActivity {
         myToolbar.inflateMenu(R.menu.menu_search);
 
         ActionBar ab = getSupportActionBar();
+        assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
 
         fusedLocation = new FusedLocation(context, activity);
@@ -89,235 +98,30 @@ public class MainActivity  extends AppCompatActivity {
 
 
         fabAddPost = (FloatingActionButton) findViewById(R.id.fab_addpost);
-//        scrollView = (ScrollView) findViewById(R.id.scrollView_fbmain);
         llbottomwrapper = (LinearLayout) findViewById(R.id.ll_wrapper_bottom);
-        lvFeeds = (ListView) findViewById(R.id.lv_feeds);
-//        CardView cardview1 = (CardView) findViewById(R.id.post1);
-//        TextView txtLinkToComments1 = (TextView) cardview1.findViewById(R.id.txtlinkcomments);
-//        final ImageButton btn1 = (ImageButton) cardview1.findViewById(R.id.btnPostOptions);
-//
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+
+//        lvNewsFeeds = (ListView) findViewById(R.id.lv_feeds);
+
         LinearLayout llpostSomething = (LinearLayout) findViewById(R.id.ll_postSomething);
         LinearLayout lluploadPhoto = (LinearLayout) findViewById(R.id.ll_uploadPhoto);
         LinearLayout lluploadFile = (LinearLayout) findViewById(R.id.ll_uploadfile);
-//        LinearLayout llshare = (LinearLayout) cardview1.findViewById(R.id.ll_share);
-//
-//        llshare.setOnClickListener(new View.OnClickListener() {
+
+
+//        lvNewsFeeds.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
-//            public void onClick(View v) {
-//                String message = "Text I want to share.";
-//                Intent share = new Intent(Intent.ACTION_SEND);
-//                share.setType("text/plain");
-//                share.putExtra(Intent.EXTRA_TEXT, message);
-//
-//                startActivity(Intent.createChooser(share, "Share to:"));
-//            }
-//        });
-//
-
-//
-//
-//        txtLinkToComments1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(activity, Activity_Comments.class);
-//                startActivity(intent);
-//
-//            }
-//        });
-//
-//        btn1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                PopupMenu popup = new PopupMenu(activity, btn1);
-//                popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
-//
-//                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//                    public boolean onMenuItemClick(MenuItem item) {
-//                        if (item.getItemId()== R.id.reportPostAsSpam){
-//                            Helper.short_(activity,"Reported as spam");
-//                        }else if (item.getItemId()== R.id.copyPostText){
-//                            Helper.short_(activity,"Post Copied");
-//                        }
-//                        return true;
-//                    }
-//                });
-//
-//                popup.show();//showing popup menu
-//            }
-//        });
-//
-//        CardView cardview2 = (CardView) findViewById(R.id.post2);
-//        CardView cardview5 = (CardView) findViewById(R.id.post5);
-//        final ImageButton btn2 = (ImageButton) cardview2.findViewById(R.id.btnPostOptions);
-//        ImageView justimage = (ImageView) cardview2.findViewById(R.id.justimage);
-//        ImageView justimage5 = (ImageView) cardview5.findViewById(R.id.justimage);
-//
-//        BitmapFactory.Options options = new BitmapFactory.Options();
-//        options.inSampleSize = 4;
-//        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.wall4, options);
-//        Bitmap largeIcon5 = BitmapFactory.decodeResource(getResources(), R.drawable.wall, options);
-//
-//        justimage.setImageBitmap(largeIcon);
-//        justimage5.setImageBitmap(largeIcon5);
-//
-//
-//        SpannableString ss = new SpannableString("Here @ Malangaan Rock formation! #natureTrip");
-//
-//        ClickableSpan clickableSpan = new ClickableSpan() {
-//            @Override
-//            public void onClick(View textView) {
-////                startActivity(new Intent(MyActivity.this, NextActivity.class));
-//                Helper.short_(activity, "hashtag: " + finalHashtag);
-//            }
-//            @Override
-//            public void updateDrawState(TextPaint ds) {
-//                super.updateDrawState(ds);
-//                ds.setUnderlineText(false);
-//            }
-//        };
-//
-//        ForegroundColorSpan fcs = new ForegroundColorSpan(Color.BLUE);
-//
-//        int startint = 0 , endint=0, isspace = 0;
-//        finalHashtag = "";
-//        for (int i = 0; i < ss.length(); i++) {
-//
-//            if (ss.charAt(i) == '#') {
-//                startint = i;
-//            }
-//
-//            if (startint!=0 && (endint == 0)){
-//                finalHashtag = finalHashtag + ss.charAt(i);
-//            }
-//
-//            if (startint != 0 || ss.charAt(i) == ' ' ) {
-//                    endint =  i;
-//            }
-//
-//        }
-//        ss.setSpan(clickableSpan, startint, endint, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        ss.setSpan(fcs, startint, endint, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-//
-//        final TextView txtpost = (TextView) cardview2.findViewById(R.id.txtpost);
-//        txtpost.setText(ss);
-//        txtpost.setMovementMethod(LinkMovementMethod.getInstance());
-//        txtpost.setHighlightColor(Color.TRANSPARENT);
-//
-//
-//        btn2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                PopupMenu popup = new PopupMenu(activity, btn2);
-//                popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
-//
-//                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//                    public boolean onMenuItemClick(MenuItem item) {
-//                        if (item.getItemId()== R.id.reportPostAsSpam){
-//                            Helper.short_(activity,"Reported as spam");
-//                        }else if (item.getItemId()== R.id.copyPostText){
-//                            Helper.short_(activity,"Post Copied");
-//                        }
-//
-//                        return true;
-//                    }
-//                });
-//
-//                popup.show();//showing popup menu
-//            }
-//        });
-
-
-//        CardView cardview3 = (CardView) findViewById(R.id.post3);
-//        final ImageButton btn3 = (ImageButton) cardview3.findViewById(R.id.btnPostOptions);
-//        btn3.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                PopupMenu popup = new PopupMenu(activity, btn3);
-//                popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
-//
-//                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//                    public boolean onMenuItemClick(MenuItem item) {
-//                        if (item.getItemId()== R.id.reportPostAsSpam){
-//                            Helper.short_(activity,"Reported as spam");
-//                        }else if (item.getItemId()== R.id.copyPostText){
-//                            Helper.short_(activity,"Post Copied");
-//                        }
-//                        return true;
-//                    }
-//                });
-//
-//                popup.show();//showing popup menu
-//            }
-//        });
-
-
-
-//        imageview = (ImageView) findViewById(R.id.justimage);
-//
-//        imageview.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(activity, Activity_ViewImage.class);
-//                startActivity(intent);
-//            }
-//        });
-
-
-
-
-
-
-//        scrollView.setOnGenericMotionListener(new View.OnGenericMotionListener() {
-//            @Override
-//            public boolean onGenericMotion(View v, MotionEvent event) {
+//            public boolean onTouch(View v, MotionEvent event) {
 //                if (llbottomwrapper.getVisibility() == View.VISIBLE) {
-////                    llbottomwrapper.setVisibility(View.GONE);
-////                    fabAddPost.setVisibility(View.VISIBLE);
 //                    isFabSelected = false;
-//                    animateBottom();
+//                    if (!isBottomAnimating){
+//                        animateBottom();
+//                    }
 //                }
 //                return false;
 //            }
 //        });
 
-        lvFeeds.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (llbottomwrapper.getVisibility() == View.VISIBLE) {
-                    isFabSelected = false;
-                    if (!isBottomAnimating){
-                        animateBottom();
-                    }
-                }
-                return false;
-            }
-        });
-
-//        lvFeeds.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-//            @Override
-//            public void onScrollChanged() {
-//                if (llbottomwrapper.getVisibility() == View.VISIBLE) {
-//                    isFabSelected = false;
-//                    if (!isBottomAnimating){
-//                        animateBottom();
-//                    }
-//                }
-//            }
-//        });
-
-//        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-//            @Override
-//            public void onScrollChanged() {
-//                if (llbottomwrapper.getVisibility() == View.VISIBLE) {
-////                    llbottomwrapper.setVisibility(View.GONE);
-////                    fabAddPost.setVisibility(View.VISIBLE);
-//                    isFabSelected = false;
-//                    if (!isBottomAnimating){
-//                        animateBottom();
-//                    }
-//                }
-//            }
-//        });
 
         fabAddPost.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -376,7 +180,63 @@ public class MainActivity  extends AppCompatActivity {
         });
 
 
+
     }
+
+
+    private void requestDataFeedData() {
+        StringRequest postRequest = new StringRequest(Request.Method.POST, Helper.variables.sourceAddress_goDaddy+"FBselectNewsFeeds.php",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(final String response) {
+                        if (response.substring(1, 2).equalsIgnoreCase("0")) {
+                            Log.d("ResponseAdapter", "0 Failed");
+
+
+                        } else {
+                            Log.d("ResponseAdapter", "1 Success: "+ response);
+                            Helper.dialogBox.okOnly_Scrolling(activity, "Response", response, "OK", R.color.blue_400);
+                            newsFeedList = NewsFeedsParser.parseFeed(response);
+                            rcAdapter = new RecyclerViewAdapter(newsFeedList, context);
+
+                            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                            recyclerView.setLayoutManager(mLayoutManager);
+                            recyclerView.setItemAnimator(new DefaultItemAnimator());
+                            recyclerView.setAdapter(rcAdapter);
+                            rcAdapter.notifyDataSetChanged();
+
+//                            newsFeedList = new ArrayList<>();
+//
+//                            ImageAdapter adapter = new ImageAdapter(context, R.layout.cardview_postimage, newsFeedList);
+
+//                            lvNewsFeeds.setAdapter(adapter);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Helper.dialogBox.okOnly_Scrolling(activity,"Err" ,""+error, "OK", R.color.red);
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", "tsraqua");
+                params.put("password", "tsraqua");
+                params.put("deviceid", Helper.getDeviceInfo.getMacAddress(context));
+                params.put("userid",  "11");
+                params.put("userlvl", "4");
+
+                return params;
+            }
+        };
+
+        MyVolleyAPI api = new MyVolleyAPI();
+        api.addToReqQueue(postRequest, context);
+    }
+
+
 
     private void animateBottom(){
         Animation animatelayout;
@@ -453,6 +313,7 @@ public class MainActivity  extends AppCompatActivity {
                 // Do something when expanded
                 return true;  // Return true to expand action view
             }
+
         };
 
         // Get the MenuItem for the action item
@@ -464,11 +325,19 @@ public class MainActivity  extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
+        if (item.getItemId() == R.id.action_settings) {
+            Helper.toast.indefinite(activity, "Trying to Retrieve Data");
+            Log.d("ResponseAdapter", "Start Request");
+            requestDataFeedData();
+        }
+        return super.onOptionsItemSelected(item);
 
+    }
 
-
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    //    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        if (resultCode == RESULT_OK) {
 //            if (requestCode == SELECT_PICTURE) { //
 //                Uri selectedFileUri = data.getData();

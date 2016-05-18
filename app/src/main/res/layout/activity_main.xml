@@ -14,14 +14,23 @@
              android:layout_width="match_parent"/>
 
 
-    <ListView android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:id="@+id/lv_feeds"
-              android:entries="@array/province"
-              android:layout_below="@+id/toolbar2"
-              android:layout_above="@+id/ll_wrapper_bottom"
-              android:overScrollMode="ifContentScrolls"
-    />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar2"
+        android:layout_above="@+id/ll_wrapper_bottom"
+        android:overScrollMode="ifContentScrolls"
+        android:scrollbars="vertical" />
+
+    <!--<ListView android:layout_width="match_parent"-->
+              <!--android:layout_height="wrap_content"-->
+              <!--android:id="@+id/lv_feeds"-->
+              <!--android:entries="@array/province"-->
+              <!--android:layout_below="@+id/toolbar2"-->
+              <!--android:layout_above="@+id/ll_wrapper_bottom"-->
+              <!--android:overScrollMode="ifContentScrolls"-->
+    <!--/>-->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_addpost"

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_height="wrap_content"
+              android:layout_width="match_parent">
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="1dp"
+    >
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+
+        >
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:orientation="horizontal"
+                          android:layout_gravity="center"
+                          android:gravity="center"
+                          android:paddingLeft="15dp"
+                          android:paddingRight="15dp"
+                          android:paddingTop="5dp"
+            >
+                <ImageView android:layout_width="40dp"
+                           android:layout_height="40dp"
+                           android:src="@mipmap/ic_launcher"/>
+
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:layout_marginLeft="8dp"
+                              android:orientation="vertical">
+
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="horizontal"
+                                  android:gravity="center">
+                        <TextView
+                            android:id="@+id/fullname"
+                            android:text="Gregoria De Jesus"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:textColor="@color/indigo_800"
+                            android:layout_weight="1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <ImageButton android:layout_width="25sp"
+                                     android:layout_height="25dp"
+                                     android:layout_weight="0"
+                                     android:id="@+id/btnPostOptions"
+                                     android:background="@drawable/bg_material_transparent"
+                                     android:src="@drawable/ic_arrow_drop_down_black_24dp"/>
+                    </LinearLayout>
+
+
+                    <LinearLayout android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/date"
+                            android:text="March 2, 2016"
+                            android:textColor="@color/gray_600"
+                            android:textSize="12sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:paddingLeft="4dp"
+                                  android:paddingRight="4dp"
+                                  android:textSize="12sp"
+                                  android:text="\-"/>
+                        <TextView
+                            android:id="@+id/location"
+                            android:text="San Rafael, Bulacan"
+                            android:textColor="@color/gray_600"
+                            android:textSize="12sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:paddingTop="5dp"
+                          android:paddingBottom="10dp"
+                          android:orientation="vertical">
+                <TextView
+                    android:id="@+id/txtDesc"
+                    android:text="Here @ Malangaan Rock formation! #natureTrip"
+                    android:textColor="@color/gray_900"
+                    android:textSize="13sp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <ImageView android:layout_width="fill_parent"
+                           android:layout_height="wrap_content"
+                           android:adjustViewBounds="true"
+                           android:id="@+id/img_content"
+                           android:background="@color/gray_200"
+                           android:scaleType="fitCenter"
+                           android:src="@drawable/ic_photo_512x"/>
+
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/gray_300"
+                  android:layout_marginLeft="15dp" android:layout_marginRight="15dp"/>
+
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:paddingLeft="15dp"
+                          android:paddingRight="15dp"
+                          android:paddingBottom="10dp"
+                          android:paddingTop="10dp"
+            >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal" >
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:clickable="false"
+                        android:background="#0000"
+                        android:src="@drawable/ic_comment_black_24dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtlinkcomments"
+                        android:textStyle="bold"
+                        android:textSize="13sp"
+                        android:paddingLeft="3dp"
+                        android:text="Comments" />
+                </LinearLayout>
+
+                <!--<LinearLayout-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_horizontal"-->
+                <!--android:orientation="horizontal" >-->
+                <!--<ImageView-->
+                <!--android:layout_width="18dp"-->
+                <!--android:layout_height="18dp"-->
+                <!--android:clickable="false"-->
+                <!--android:background="#0000"-->
+                <!--android:src="@drawable/ic_search_white_24dp"/>-->
+                <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingLeft="3dp"-->
+                <!--android:id="@+id/txtlinkshare"-->
+                <!--android:textStyle="bold"-->
+                <!--android:textSize="13sp"-->
+                <!--android:text="Share" />-->
+                <!--</LinearLayout>-->
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

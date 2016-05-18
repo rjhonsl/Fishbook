@@ -7,12 +7,15 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.provider.OpenableColumns;
 import android.support.design.widget.Snackbar;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -132,22 +135,39 @@ public class Helper {
 
         public static void indefinite(Activity context, String msg){
 
-            final Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), msg, Snackbar.LENGTH_INDEFINITE)
-                    .setActionTextColor(context.getResources().getColor(R.color.gray_100));
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                final Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), msg, Snackbar.LENGTH_INDEFINITE)
+                        .setActionTextColor(context.getResources().getColor(R.color.gray_100));
 
-            View view = snackbar.getView();
-            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-            tv.setTextColor(context.getResources().getColor(R.color.gray_100));
-            tv.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    snackbar.dismiss();
-                    return false;
-                }
-            });
-            tv.setMaxLines(5);
-            snackbar.show();
+                View view = snackbar.getView();
+                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setTextColor(context.getResources().getColor(R.color.gray_100));
+                tv.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        snackbar.dismiss();
+                        return false;
+                    }
+                });
+                tv.setMaxLines(5);
+                snackbar.show();
+            }else{
+                LayoutInflater inflater = context.getLayoutInflater();
+                View layout = inflater.inflate(R.layout.toast,
+                        (ViewGroup) context.findViewById(R.id.toast_layout_root));
 
+                TextView text = (TextView) layout.findViewById(R.id.text);
+                Typeface font = Typeface.createFromAsset(context.getAssets(), "Roboto-Light.ttf");
+                text.setTypeface(font);
+                text.setText(msg);
+
+                Toast toast = new Toast(context.getApplicationContext());
+                toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                toast.setMargin(0, 0);
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
+            }
 
 
         }
@@ -660,7 +680,33 @@ public class Helper {
         }
     }
 
-    public static
+    public static class fileInfo{
+
+        public static String getSize(Intent returnIntent, Context context){
+            Uri returnUri = returnIntent.getData();
+            Cursor returnCursor =
+                    context.getContentResolver().query(returnUri, null, null, null, null);
+            assert returnCursor != null;
+            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+            returnCursor.moveToFirst();
+
+            return Long.toString(returnCursor.getLong(sizeIndex));
+        }
+
+
+        public static String getName(Intent returnIntent, Context context){
+            Uri returnUri = returnIntent.getData();
+            Cursor returnCursor =
+                    context.getContentResolver().query(returnUri, null, null, null, null);
+            assert returnCursor != null;
+            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+            returnCursor.moveToFirst();
+
+            return returnCursor.getString(nameIndex);
+        }
+    }
 
 
 }//end of class
