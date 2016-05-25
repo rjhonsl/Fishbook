@@ -4,9 +4,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -40,10 +46,8 @@ import java.util.Map;
 
 public class MainActivity  extends AppCompatActivity {
 
-
     Activity activity;
     Context context;
-//    ListView lvNewsFeeds;
     RecyclerView recyclerView;
     RecyclerViewAdapter rcAdapter;
 
@@ -64,8 +68,6 @@ public class MainActivity  extends AppCompatActivity {
     public static int CONTENT_IMAGE = 1;
     public static int CONTENT_FILE = 2;
     public static int CONTENT_EVENT = 3;
-
-    private int serverResponseCode;
 
 
 
@@ -89,8 +91,6 @@ public class MainActivity  extends AppCompatActivity {
         myToolbar.inflateMenu(R.menu.menu_search);
 
         ActionBar ab = getSupportActionBar();
-        assert ab != null;
-        ab.setDisplayHomeAsUpEnabled(true);
 
         fusedLocation = new FusedLocation(context, activity);
         fusedLocation.connectToApiClient();
@@ -100,27 +100,21 @@ public class MainActivity  extends AppCompatActivity {
         fabAddPost = (FloatingActionButton) findViewById(R.id.fab_addpost);
         llbottomwrapper = (LinearLayout) findViewById(R.id.ll_wrapper_bottom);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(activity);
+        recyclerView.setLayoutManager(mLinearLayoutManager);
+        registerForContextMenu(recyclerView);
 
-
-//        lvNewsFeeds = (ListView) findViewById(R.id.lv_feeds);
+        //add ItemDecoration
+        int VERTICAL_ITEM_SPACE = 40;
+        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(VERTICAL_ITEM_SPACE));
+//        //or
+//        recyclerView.addItemDecoration(new DividerItemDecoration(activity));
+//        //or
+//        recyclerView.addItemDecoration(new DividerItemDecoration(activity, R.drawable.line_divider));
 
         LinearLayout llpostSomething = (LinearLayout) findViewById(R.id.ll_postSomething);
         LinearLayout lluploadPhoto = (LinearLayout) findViewById(R.id.ll_uploadPhoto);
         LinearLayout lluploadFile = (LinearLayout) findViewById(R.id.ll_uploadfile);
-
-
-//        lvNewsFeeds.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (llbottomwrapper.getVisibility() == View.VISIBLE) {
-//                    isFabSelected = false;
-//                    if (!isBottomAnimating){
-//                        animateBottom();
-//                    }
-//                }
-//                return false;
-//            }
-//        });
 
 
         fabAddPost.setOnClickListener(new View.OnClickListener() {
@@ -128,6 +122,19 @@ public class MainActivity  extends AppCompatActivity {
             public void onClick(View v) {
                 isFabSelected = true;
                 animateBottom();
+            }
+        });
+
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (llbottomwrapper.getVisibility() == View.VISIBLE) {
+                    isFabSelected = false;
+                    if (!isBottomAnimating){
+                        animateBottom();
+                    }
+                }
+                return false;
             }
         });
 
@@ -181,6 +188,7 @@ public class MainActivity  extends AppCompatActivity {
 
 
 
+        requestDataFeedData();
     }
 
 
@@ -192,11 +200,10 @@ public class MainActivity  extends AppCompatActivity {
                         if (response.substring(1, 2).equalsIgnoreCase("0")) {
                             Log.d("ResponseAdapter", "0 Failed");
 
-
                         } else {
                             Log.d("ResponseAdapter", "1 Success: "+ response);
-                            Helper.dialogBox.okOnly_Scrolling(activity, "Response", response, "OK", R.color.blue_400);
-                            newsFeedList = NewsFeedsParser.parseFeed(response);
+//                            Helper.dialogBox.okOnly_Scrolling(activity, "Response", response, "OK", R.color.blue_400);
+                            newsFeedList = NewsFeedsParser.parseFeed(response, context);
                             rcAdapter = new RecyclerViewAdapter(newsFeedList, context);
 
                             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -328,9 +335,8 @@ public class MainActivity  extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == R.id.action_settings) {
-            Helper.toast.indefinite(activity, "Trying to Retrieve Data");
-            Log.d("ResponseAdapter", "Start Request");
+        if (item.getItemId() == R.id.action_refresh) {
+            Helper.toast.long_(activity, "Refreshing Contents");
             requestDataFeedData();
         }
         return super.onOptionsItemSelected(item);
@@ -514,5 +520,91 @@ public class MainActivity  extends AppCompatActivity {
 //        }
 //    }
 
+
+    public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
+        private Drawable mDivider;
+
+        public SimpleDividerItemDecoration(Context context) {
+            mDivider =  ContextCompat.getDrawable(context,R.drawable.line_divider);
+        }
+
+        @Override
+        public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+            int left = parent.getPaddingLeft();
+            int right = parent.getWidth() - parent.getPaddingRight();
+
+            int childCount = parent.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                View child = parent.getChildAt(i);
+
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+
+                int top = child.getBottom() + params.bottomMargin;
+                int bottom = top + mDivider.getIntrinsicHeight();
+
+                mDivider.setBounds(left, top, right, bottom);
+                mDivider.draw(c);
+            }
+        }
+    }
+
+
+    public class DividerItemDecoration extends RecyclerView.ItemDecoration {
+
+        private final int[] ATTRS = new int[]{android.R.attr.listDivider};
+
+        private Drawable mDivider;
+
+        /**
+         * Default divider will be used
+         */
+        public DividerItemDecoration(Context context) {
+            final TypedArray styledAttributes = context.obtainStyledAttributes(ATTRS);
+            mDivider = styledAttributes.getDrawable(0);
+            styledAttributes.recycle();
+        }
+
+        /**
+         * Custom divider will be used
+         */
+        public DividerItemDecoration(Context context, int resId) {
+            mDivider = ContextCompat.getDrawable(context, resId);
+        }
+
+        @Override
+        public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+            int left = parent.getPaddingLeft();
+            int right = parent.getWidth() - parent.getPaddingRight();
+
+            int childCount = parent.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                View child = parent.getChildAt(i);
+
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+
+                int top = child.getBottom() + params.bottomMargin;
+                int bottom = top + mDivider.getIntrinsicHeight();
+
+                mDivider.setBounds(left, top, right, bottom);
+                mDivider.draw(c);
+            }
+        }
+    }
+
+
+    public class VerticalSpaceItemDecoration extends RecyclerView.ItemDecoration {
+
+        private final int mVerticalSpaceHeight;
+
+        public VerticalSpaceItemDecoration(int mVerticalSpaceHeight) {
+            this.mVerticalSpaceHeight = mVerticalSpaceHeight;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+                                   RecyclerView.State state) {
+            outRect.bottom = mVerticalSpaceHeight;
+        }
+    }
 
 }

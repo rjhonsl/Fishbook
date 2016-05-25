@@ -132,7 +132,7 @@ public class Activity_PostText extends AppCompatActivity {
                         "(NULL, '11', " +
                         "'"+System.currentTimeMillis()+"', " +
                         "'"+fusedLocation.getLastKnowLocation().latitude+"', " +
-                        "'"+fusedLocation.getLastKnowLocation().latitude+"', '0', '0');";
+                        "'"+fusedLocation.getLastKnowLocation().longitude+"', '0', '0');";
 
 
                 params.put("sql", sqlString);

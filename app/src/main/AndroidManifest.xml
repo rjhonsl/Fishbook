@@ -46,6 +46,10 @@
         <activity android:name=".Main.Activity_PostImage"
             android:label="Post Image" >
         </activity>
+
+        <activity android:name=".Main.Activity_ViewImage"
+                  android:label="View Image" >
+        </activity>
     </application>
 
 </manifest>

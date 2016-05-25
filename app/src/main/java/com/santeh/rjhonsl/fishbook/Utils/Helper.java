@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -495,6 +497,30 @@ public class Helper {
         }
     }
 
+    public static class LocationUtil{
+
+        public static String getAddress(Context context1,String lat, String lon) {
+            String address1 = "";
+            try {
+                Geocoder geocoder = new Geocoder(context1);
+                List<Address> addresses = geocoder.getFromLocation(Double.parseDouble(lat), Double.parseDouble(lon), 1);
+                String address = addresses.get(0).getAddressLine(0);
+                String city = addresses.get(0).getAddressLine(1);
+                String country = addresses.get(0).getAddressLine(2);
+                String country1 = addresses.get(0).getAddressLine(3);
+                address1 =
+//                        "" + address + ", " +
+                        city + ", " + country
+//                        + ", " + country1
+                ;
+                Log.d("TAG",address1 );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return address1;
+        }
+    }
 
     public static class getDeviceInfo{
 
@@ -506,7 +532,9 @@ public class Helper {
 
         public static String getMacAddress(Context context){
             String macaddress = "";
-            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1){
+            if (Build.FINGERPRINT.contains("generic")){
+                macaddress = "1c:8e:5c:ec:f3:8e";//Current Testing device. Hol-u19
+            }else if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1){
                 try {
                     String interfaceName = "wlan0";
                     List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());

@@ -201,9 +201,9 @@ public class Activity_PostImage extends AppCompatActivity {
 
             @Override
             protected String doInBackground(Void... params) {
-                double quality = 100;
+                double quality = 100; //quality in percentage
                 int size = Integer.valueOf(filesize);
-                double requiredSize = 300000;
+                double requiredSize = 300000;//max size in kb
                 double reducedSize = size;
 
                 while (reducedSize > requiredSize) {
@@ -241,18 +241,20 @@ public class Activity_PostImage extends AppCompatActivity {
                 params.put("userlvl", "4");
 
                 params.put("content_type", MainActivity.CONTENT_IMAGE + "");
-                params.put("content_desc", edtImageDesc.getText().toString() + "");
+
                 params.put("content_fetchAt", System.currentTimeMillis() + "");
 
 
+                String geoLocation =  Helper.LocationUtil.getAddress(context, fusedLocation.getLastKnowLocation().latitude+"", fusedLocation.getLastKnowLocation().longitude+"");
                 String sqlString = "INSERT INTO `feed_main_` " +
                         "(`feed_main_id`, `feed_main_uid`, `feed_main_date`, `feed_main_loclat`, `feed_main_loclong`, `feed_main_fetch_at`, `feed_main_seen_state`) " +
                         "VALUES " +
                         "(NULL, '11', " +
                         "'"+System.currentTimeMillis()+"', " +
                         "'"+fusedLocation.getLastKnowLocation().latitude+"', " +
-                        "'"+fusedLocation.getLastKnowLocation().latitude+"', '0', '0');";
+                        "'"+fusedLocation.getLastKnowLocation().longitude+"', '"+geoLocation+"', '0');";
 
+                Log.d("SQL", sqlString);
 
                 params.put("sql", sqlString);
 
@@ -262,6 +264,7 @@ public class Activity_PostImage extends AppCompatActivity {
 
 
     public void makeHTTPCall() {
+        params.put("content_desc", edtImageDesc.getText().toString() + "");
         final int DEFAULT_TIMEOUT = 20 * 1000;
         AsyncHttpClient client = new AsyncHttpClient();
         client.setTimeout(DEFAULT_TIMEOUT);
@@ -275,12 +278,18 @@ public class Activity_PostImage extends AppCompatActivity {
                     @Override
                     public void onSuccess(String response) {
                         // Hide Progress Dialog
-                        loading.hide();
+                        if (response.substring(1,2).equalsIgnoreCase("0")){
+                            loading.hide();
+                            Toast.makeText(context, "Upload Failed: "+response, Toast.LENGTH_SHORT).show();
+                        }else{
+                            loading.hide();
 
-                        finish();
-                        Toast.makeText(context, "Image has been uploaded", Toast.LENGTH_SHORT).show();
-                        Helper.toast.long_(activity, "Image has been uploaded.");
-                        Log.d("Response of upload", response);
+                            finish();
+                            Toast.makeText(context, "Image has been uploaded", Toast.LENGTH_SHORT).show();
+                            Helper.toast.long_(activity, "Image has been uploaded.");
+                            Log.d("Response of upload", response);
+                        }
+
                     }
 
                     // When the response returned by REST has Http

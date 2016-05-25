@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical"
+                android:background="@color/gray_900"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:elevation="3dp"
+                      android:layout_alignParentTop="true"
+                      android:id="@+id/ll_top_postimage"
+                      android:orientation="horizontal"
+        >
+
+                <TextView android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:textSize="18sp"
+                          android:paddingBottom="10dp"
+                          android:paddingTop="10dp"
+                          android:gravity="center_vertical"
+                          android:textColor="@color/gray_100"
+                          android:drawableLeft="@drawable/ic_keyboard_arrow_left_white_24dp"
+                          android:text="  Posted Image"/>
+
+        </LinearLayout>
+
+        <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+            android:foregroundGravity="center"
+            android:id="@+id/imageView"
+            app:assetName="ic_photo_512x.png"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:paddingLeft="15dp"
+                      android:paddingRight="15dp"
+                      android:paddingBottom="10dp"
+                      android:paddingTop="10dp"
+                      android:gravity="center"
+
+                      android:layout_alignParentBottom="true"
+        >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:id="@+id/ll_comments"
+                    android:orientation="horizontal" >
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:clickable="false"
+                            android:background="#0000"
+                            android:src="@drawable/ic_comment_white_24dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/txtlinkcomments"
+                            android:textStyle="bold"
+                            android:textColor="@color/gray_100"
+                            android:textSize="13sp"
+                            android:paddingLeft="3dp"
+                            android:text="Comments" />
+                </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+</RelativeLayout>

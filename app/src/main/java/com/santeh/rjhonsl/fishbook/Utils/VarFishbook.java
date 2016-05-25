@@ -13,7 +13,11 @@ public class VarFishbook extends Application {
     public int currentuser;
     public int currentuserLvl;
 
-    public int isactive;
+    private int isactive;
+    private int isAquaActive;
+    private int isPetOneActive;
+    private int isHogsActive;
+    private String currentUserID;
     private String currentUserName;
     private String currentUserFirstname;
     private String currentUserLastname;
@@ -21,6 +25,8 @@ public class VarFishbook extends Application {
     private String dateAddedToDB;
     private String assignedArea;
     private String deviceID;
+
+    private String main_Address;
 
     private String comment_Id;
     private String comment_MainId;
@@ -398,5 +404,45 @@ public class VarFishbook extends Application {
 
     public void setMain_seenState(String main_seenState) {
         this.main_seenState = main_seenState;
+    }
+
+    public String getMain_Address() {
+        return main_Address;
+    }
+
+    public void setMain_Address(String main_Address) {
+        this.main_Address = main_Address;
+    }
+
+    public String getCurrentUserID() {
+        return currentUserID;
+    }
+
+    public void setCurrentUserID(String currentUserID) {
+        this.currentUserID = currentUserID;
+    }
+
+    public int getIsAquaActive() {
+        return isAquaActive;
+    }
+
+    public void setIsAquaActive(int isAquaActive) {
+        this.isAquaActive = isAquaActive;
+    }
+
+    public int getIsPetOneActive() {
+        return isPetOneActive;
+    }
+
+    public void setIsPetOneActive(int isPetOneActive) {
+        this.isPetOneActive = isPetOneActive;
+    }
+
+    public int getIsHogsActive() {
+        return isHogsActive;
+    }
+
+    public void setIsHogsActive(int isHogsActive) {
+        this.isHogsActive = isHogsActive;
     }
 }
