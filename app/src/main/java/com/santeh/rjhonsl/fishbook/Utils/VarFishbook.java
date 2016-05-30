@@ -7,7 +7,7 @@ import com.google.android.gms.maps.GoogleMap;
 /**
  * Created by rjhonsl on 8/12/2015.
  */
-public class VarFishbook extends Application {
+public class VarFishBook extends Application {
 
 
     public int currentuser;

@@ -18,20 +18,20 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.santeh.rjhonsl.fishbook.R;
-import com.santeh.rjhonsl.fishbook.Utils.VarFishbook;
+import com.santeh.rjhonsl.fishbook.Utils.VarFishBook;
 
 import java.util.List;
 
-public class ImageAdapter extends ArrayAdapter<VarFishbook> {
+public class ImageAdapter extends ArrayAdapter<VarFishBook> {
 
 	private Context context;
-	private List<VarFishbook> feedList;
+	private List<VarFishBook> feedList;
 	
 	private LruCache<Integer, Bitmap> imageCache;
 	
 	private RequestQueue queue;
 
-	public ImageAdapter(Context context, int resource, List<VarFishbook> objects) {
+	public ImageAdapter(Context context, int resource, List<VarFishBook> objects) {
 		super(context, resource, objects);
 		this.context = context;
 		this.feedList = objects;
@@ -51,7 +51,7 @@ public class ImageAdapter extends ArrayAdapter<VarFishbook> {
 		View view = inflater.inflate(R.layout.cardview_postimage, parent, false);
 
 		//Display flower name in the TextView widget
-		final VarFishbook newsFeeds = feedList.get(position);
+		final VarFishBook newsFeeds = feedList.get(position);
 		TextView tv = (TextView) view.findViewById(R.id.txtDesc);
 		tv.setText(newsFeeds.getContent_description());
 

@@ -9,7 +9,7 @@
           app:showAsAction="ifRoom|collapseActionView"
           app:actionViewClass="android.support.v7.widget.SearchView" />
 
-    <!--&lt;!&ndash; Settings, should always be in the overflow &ndash;&gt;-->
+     <!--Settings, should always be in the overflow -->
     <!--<item android:id="@+id/action_settings"-->
           <!--android:title="Settings"-->
           <!--android:icon="@drawable/ic_setting_dark"-->

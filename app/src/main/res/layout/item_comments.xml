@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:id="@+id/ll_item_comments"
+              android:layout_width="match_parent"
+              android:layout_margin="15dp"
+              android:layout_height="wrap_content">
+
+    <ImageView android:layout_width="40dp"
+               android:layout_height="40dp"
+               android:id="@+id/img_userpic"
+               android:src="@mipmap/ic_launcher"
+
+    />
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:paddingLeft="10dp"
+                  android:orientation="vertical"
+    >
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+        >
+            <TextView
+                android:id="@+id/txtfullname"
+                android:text="Juan Dela Cruz"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="@color/gray_900"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+            <ImageButton android:layout_width="20dp"
+                         android:layout_height="20dp"
+                         android:id="@+id/btnOptions"
+                         android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                         android:contentDescription="Options"/>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:paddingTop="2dp"
+            android:id="@+id/txtComment"
+            android:text="Just a comment to fill this textView Just a comment to fill this textView Just a comment to fill this textViewJust a comment to fill this textView Just a comment to fill this textViewJust a comment to fill this textView Just a comment to fill this textView Just a comment to fill this textView Just a comment to fill this textView"
+            android:textColor="@color/gray_700"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:paddingTop="2dp"
+            android:id="@+id/txtDateTime"
+            android:textStyle="bold"
+            android:text="2hrs ago"
+            android:textColor="@color/gray_600"
+            android:textSize="14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -50,6 +50,10 @@
         <activity android:name=".Main.Activity_ViewImage"
                   android:label="View Image" >
         </activity>
+
+        <activity android:name=".Main.Activity_Comments"
+                  android:label="View Image" >
+        </activity>
     </application>
 
 </manifest>

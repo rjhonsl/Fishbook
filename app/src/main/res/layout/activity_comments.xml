@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:descendantFocusability="beforeDescendants"
+              android:focusableInTouchMode="true" >
+>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:elevation="3dp"
+                  android:id="@+id/ll_top_comments"
+    >
+
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textSize="18sp"
+                  android:paddingBottom="10dp"
+                  android:paddingTop="10dp"
+                  android:gravity="center_vertical"
+                  android:textColor="@color/gray_800"
+                  android:drawableLeft="@drawable/ic_keyboard_arrow_left_black_24dp"
+                  android:text="  Comments"/>
+
+    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/rv_comments"
+    />
+
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                  android:orientation="vertical"
+                    >
+        <View android:layout_width="match_parent" android:layout_marginLeft="15dp" android:layout_marginRight="15dp" android:layout_height="1dp" android:background="@color/gray_300"/>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:hint="Write a comment..."
+                      android:paddingLeft="15dp"
+                      android:paddingRight="15dp"
+                      android:paddingTop="10dp"
+                      android:paddingBottom="10dp"
+                      android:textSize="16sp"
+                      android:maxLines="5"
+                      android:layout_weight="1"
+                      android:id="@+id/edtAddComment"
+                      android:background="@color/transparent" />
+
+            <ImageButton android:layout_width="wrap_content"
+                         android:layout_height="match_parent"
+                         android:paddingLeft="5dp"
+                         android:paddingRight="5dp"
+                         android:id="@+id/btnAddcomment"
+                         android:background="@drawable/bg_material_transparent"
+                        android:src="@drawable/ic_send_black_24dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

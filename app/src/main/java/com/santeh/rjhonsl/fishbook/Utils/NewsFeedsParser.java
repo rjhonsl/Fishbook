@@ -14,16 +14,16 @@ import java.util.List;
  */
 public class NewsFeedsParser {
 
-    public static List<VarFishbook> parseFeed(String content, Context context) {
+    public static List<VarFishBook> parseFeed(String content, Context context) {
 
         try {
             JSONArray ar = new JSONArray(content);
-            List<VarFishbook> feedlist = new ArrayList<>();
+            List<VarFishBook> feedlist = new ArrayList<>();
 
             for (int i = 0; i < ar.length(); i++) {
 
                 JSONObject obj = ar.getJSONObject(i);
-                VarFishbook fbObj = new VarFishbook();
+                VarFishBook fbObj = new VarFishBook();
 
 
                 /**

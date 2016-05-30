@@ -120,7 +120,7 @@ public class Activity_PostImage extends AppCompatActivity {
                 intent.setAction(Intent.ACTION_PICK);
                 intent.addCategory(Intent.CATEGORY_DEFAULT);
                 startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), SELECT_PICTURE);
+                        "Select a picture"), SELECT_PICTURE);
             }
         });
 

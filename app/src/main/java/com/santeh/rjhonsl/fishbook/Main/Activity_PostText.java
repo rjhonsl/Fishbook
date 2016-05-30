@@ -95,17 +95,18 @@ public class Activity_PostText extends AppCompatActivity {
                     @Override
                     public void onResponse(final String response) {
                         if (!response.substring(1, 2).equalsIgnoreCase("0")) {
-                            Helper.toast.indefinite(activity, "OK. "+"Posted: "+ response);
+                            Helper.toast.indefinite(activity, "Post successful");
+                            finish();
                         } else {
 
-                            Helper.toast.indefinite(activity, "Error"+response);
+                            Helper.toast.short_(activity, "Posting failed. Please try again.");
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                       Helper.toast.indefinite(activity, "error: "+error.toString());
+                        Helper.toast.short_(activity, "Posting failed. Please try again.");
                     }
                 })
         {
@@ -125,14 +126,14 @@ public class Activity_PostText extends AppCompatActivity {
                 params.put("content_fileurl",  "null");
                 params.put("content_fetchAt", System.currentTimeMillis() + "");
 
-
+                String geoLocation =  Helper.LocationUtil.getAddress(context, fusedLocation.getLastKnowLocation().latitude+"", fusedLocation.getLastKnowLocation().longitude+"");
                 String sqlString = "INSERT INTO `feed_main_` " +
                         "(`feed_main_id`, `feed_main_uid`, `feed_main_date`, `feed_main_loclat`, `feed_main_loclong`, `feed_main_fetch_at`, `feed_main_seen_state`) " +
                         "VALUES " +
                         "(NULL, '11', " +
                         "'"+System.currentTimeMillis()+"', " +
                         "'"+fusedLocation.getLastKnowLocation().latitude+"', " +
-                        "'"+fusedLocation.getLastKnowLocation().longitude+"', '0', '0');";
+                        "'"+fusedLocation.getLastKnowLocation().longitude+"', '"+geoLocation+"', '0');";
 
 
                 params.put("sql", sqlString);

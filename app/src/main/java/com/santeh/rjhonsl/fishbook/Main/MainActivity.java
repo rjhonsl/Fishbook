@@ -38,7 +38,7 @@ import com.santeh.rjhonsl.fishbook.R;
 import com.santeh.rjhonsl.fishbook.Utils.FusedLocation;
 import com.santeh.rjhonsl.fishbook.Utils.Helper;
 import com.santeh.rjhonsl.fishbook.Utils.NewsFeedsParser;
-import com.santeh.rjhonsl.fishbook.Utils.VarFishbook;
+import com.santeh.rjhonsl.fishbook.Utils.VarFishBook;
 
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +63,7 @@ public class MainActivity  extends AppCompatActivity {
     Boolean isFabSelected = false;
     String currentUploadID = null;
 
-    List<VarFishbook> newsFeedList;
+    List<VarFishBook> newsFeedList;
     public static int CONTENT_TEXT = 0;
     public static int CONTENT_IMAGE = 1;
     public static int CONTENT_FILE = 2;

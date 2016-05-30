@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,11 +25,12 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.santeh.rjhonsl.fishbook.APIs.MyVolleyAPI;
+import com.santeh.rjhonsl.fishbook.Main.Activity_Comments;
 import com.santeh.rjhonsl.fishbook.Main.Activity_ViewImage;
 import com.santeh.rjhonsl.fishbook.Main.MainActivity;
 import com.santeh.rjhonsl.fishbook.R;
 import com.santeh.rjhonsl.fishbook.Utils.Helper;
-import com.santeh.rjhonsl.fishbook.Utils.VarFishbook;
+import com.santeh.rjhonsl.fishbook.Utils.VarFishBook;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
-    private List<VarFishbook> newsFeedsList;
+    private List<VarFishBook> newsFeedsList;
     private LruCache<Integer, Bitmap> imageCache;
 
     private RequestQueue queue;
@@ -50,7 +50,7 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewAdapt
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtDescription, txtDateTime, txtLocation, txtFullName;
+        public TextView txtDescription, txtDateTime, txtLocation, txtFullName, txtComments;
         public ImageView imagePreview;
         public ImageButton btnContextMenu;
         public View view;
@@ -60,6 +60,7 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewAdapt
             txtDescription = (TextView) view.findViewById(R.id.txtDesc);
             txtDateTime = (TextView) view.findViewById(R.id.txtDateTime);
             txtLocation = (TextView) view.findViewById(R.id.txtlocation);
+            txtComments = (TextView) view.findViewById(R.id.txtlinkcomments);
             txtFullName = (TextView) view.findViewById(R.id.txtfullname);
             btnContextMenu = (ImageButton) view.findViewById(R.id.btnPostOptions);
 
@@ -70,7 +71,7 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewAdapt
     }
 
 
-    public RecyclerViewAdapter(List<VarFishbook> newsFeedsList, Context context) {
+    public RecyclerViewAdapter(List<VarFishBook> newsFeedsList, Context context) {
         this.newsFeedsList = newsFeedsList;
         context1 = context;
 
@@ -94,7 +95,18 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewAdapt
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        final VarFishbook newsFeedsObj = newsFeedsList.get(position);
+        final VarFishBook newsFeedsObj = newsFeedsList.get(position);
+
+
+
+        holder.txtComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context1, Activity_Comments.class);
+                intent.putExtra("postid", newsFeedsObj.getMain_id()+"");
+                context1.startActivity(intent);
+            }
+        });
 
         holder.btnContextMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,10 +130,10 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewAdapt
                         return true;
                     }
                 });
-
                 popup.show();
             }
         });
+
 
 //        holder.view.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -210,19 +222,6 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewAdapt
     public int getItemCount() {
         return newsFeedsList.size();
     }
-
-
-    public interface OnItemClickListener {
-        public void onItemClicked(int position);
-    }
-
-    public interface OnItemLongClickListener {
-        public boolean onItemLongClicked(int position);
-    }
-
-    private Fragment mFragment;
-
-
 
 
     public void removeAt(int position) {
