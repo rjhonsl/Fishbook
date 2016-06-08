@@ -40,6 +40,10 @@ import android.widget.Toast;
 
 import com.santeh.rjhonsl.fishbook.R;
 
+import org.joda.time.DateTime;
+import org.joda.time.Hours;
+import org.joda.time.Minutes;
+
 import java.net.NetworkInterface;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -171,6 +175,33 @@ public class Helper {
                 toast.show();
             }
 
+
+        }
+
+
+        public static Snackbar snackbarWithAction(Activity context, String msg){
+            Snackbar snackbar = null;
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                snackbar = Snackbar.make(context.findViewById(android.R.id.content), msg, Snackbar.LENGTH_INDEFINITE)
+                        .setActionTextColor(context.getResources().getColor(R.color.gray_100))
+                        ;
+
+                View view = snackbar.getView();
+                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setTextColor(context.getResources().getColor(R.color.gray_100));
+                final Snackbar finalSnackbar = snackbar;
+                tv.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        finalSnackbar.dismiss();
+                        return false;
+                    }
+                });
+                tv.setMaxLines(5);
+                snackbar.show();
+            }
+
+            return snackbar;
 
         }
 
@@ -371,6 +402,8 @@ public class Helper {
 
 
 
+
+
     public static class convert{
 
         public static long DateToLong(int dd, int MM, int yyyy){
@@ -456,6 +489,13 @@ public class Helper {
             return formatter.format(calendar.getTime());
         }
 
+        public static String LongToTime12Hour(long dateInMillis){
+            SimpleDateFormat formatter = new SimpleDateFormat("HH:mmaa");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(dateInMillis);
+            return formatter.format(calendar.getTime());
+        }
+
         public static String LongtoDate_DBFormat(long dateInMillis){
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             Calendar calendar = Calendar.getInstance();
@@ -483,6 +523,26 @@ public class Helper {
 
 
             return new int[]{month,day,year};
+        }
+
+
+
+        public static int getDateDifferenceHour(long start, long end){
+
+            DateTime datestart = new DateTime(start);
+            DateTime dateend = new DateTime(end);
+//            Interval interval = new Interval(start, end);
+
+            return Hours.hoursBetween(dateend,datestart).getHours();
+        }
+
+        public static int getDateDifferenceMinute(long start, long end){
+
+            DateTime datestart = new DateTime(start);
+            DateTime dateend = new DateTime(end);
+//            Interval interval = new Interval(start, end);
+
+            return Minutes.minutesBetween(dateend,datestart).getMinutes();
         }
 
     }
@@ -582,7 +642,7 @@ public class Helper {
             et.setSelection(et.getText().length());
         }
 
-        public static void hideKeyboardOnLoad(Activity activity){
+        public static void hideKeyboard(Activity activity){
             activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         }
 

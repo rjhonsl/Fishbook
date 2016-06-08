@@ -3,7 +3,10 @@
               android:orientation="horizontal"
               android:id="@+id/ll_item_comments"
               android:layout_width="match_parent"
-              android:layout_margin="15dp"
+              android:layout_marginRight="15dp"
+              android:layout_marginLeft="15dp"
+              android:layout_marginTop="5dp"
+              android:layout_marginBottom="5dp"
               android:layout_height="wrap_content">
 
     <ImageView android:layout_width="40dp"
@@ -13,7 +16,7 @@
 
     />
 
-    <LinearLayout android:layout_width="wrap_content"
+    <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:paddingLeft="10dp"
                   android:orientation="vertical"
@@ -22,6 +25,7 @@
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:orientation="horizontal"
+                      android:paddingTop="4dp"
         >
             <TextView
                 android:id="@+id/txtfullname"
@@ -47,18 +51,17 @@
             android:paddingTop="2dp"
             android:id="@+id/txtComment"
             android:text="Just a comment to fill this textView Just a comment to fill this textView Just a comment to fill this textViewJust a comment to fill this textView Just a comment to fill this textViewJust a comment to fill this textView Just a comment to fill this textView Just a comment to fill this textView Just a comment to fill this textView"
-            android:textColor="@color/gray_700"
+            android:textColor="@color/gray_800"
             android:textSize="15sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:paddingTop="2dp"
+            android:paddingTop="4dp"
             android:id="@+id/txtDateTime"
-            android:textStyle="bold"
             android:text="2hrs ago"
             android:textColor="@color/gray_600"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.LruCache;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.santeh.rjhonsl.fishbook.R;
+import com.santeh.rjhonsl.fishbook.Utils.Helper;
 import com.santeh.rjhonsl.fishbook.Utils.VarFishBook;
 
 import java.util.List;
@@ -47,6 +50,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
             txtFullName = (TextView) view.findViewById(R.id.txtfullname);
             txtComment = (TextView) view.findViewById(R.id.txtComment);
             imagePreview = (ImageView) view.findViewById(R.id.img_userpic);
+            btnContextMenu = (ImageButton) view.findViewById(R.id.btnOptions);
 
             this.view = view;
         }
@@ -79,9 +83,62 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final VarFishBook newsFeedsObj = newsFeedsList.get(position);
+        int difInHour = Helper.convert.getDateDifferenceHour(System.currentTimeMillis(), Long.valueOf(newsFeedsObj.getComment_dateCommented()));
+        int difInMinutes = Helper.convert.getDateDifferenceMinute(System.currentTimeMillis(), Long.valueOf(newsFeedsObj.getComment_dateCommented()));
+        String time = "";
 
+        if (difInMinutes  == 0 ){
+            time = "Just now";
+        }else if (difInMinutes  < 2 ){
+            time = difInMinutes + " minute ago";
+        }else if(difInMinutes < 60){
+            time = difInHour +  " minutes ago";
+        }else if(difInHour == 1){
+            time = difInHour + " hour ago";
+        }else if(difInHour < 24){
+            time = difInHour + " hours ago";
+        }
+        else if (difInHour < 48){
+            time = "Yesterday "+ Helper.convert.LongToTime12Hour(Long.valueOf(newsFeedsObj.getComment_dateCommented()));
+        }else {
+            time = Helper.convert.LongToDate_ShortGregorian(Long.valueOf(newsFeedsObj.getComment_dateCommented()));
+        }
 
+        holder.txtDateTime.setText(time);
 
+        holder.txtFullName.setText(newsFeedsObj.getCurrentUserFirstname() + " " + newsFeedsObj.getCurrentUserLastname());
+
+        holder.txtComment.setText(newsFeedsObj.getComment_content());
+        holder.btnContextMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(context1, holder.btnContextMenu);
+                popup.getMenuInflater().inflate(R.menu.contextmenu_owner, popup.getMenu());
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+//                        if (item.getItemId() == R.id.itmDelete) {
+//                            pd = new ProgressDialog(context1);
+//                            pd.setIndeterminate(false);
+//                            pd.setMessage("Removing Post...");
+//                            pd.setCancelable(false);
+//                            pd.show();
+//                        }
+                        return true;
+                    }
+                });
+                popup.show();
+
+            }
+        });
+//
+//        txtDateTime = (TextView) view.findViewById(R.id.txtDateTime);
+//        txtFullName = (TextView) view.findViewById(R.id.txtfullname);
+//        txtComment = (TextView) view.findViewById(R.id.txtComment);
+//        imagePreview = (ImageView) view.findViewById(R.id.img_userpic);
+//        btnContextMenu = (ImageButton) view.findViewById(R.id.btnOptions);
+
+        /**
 //        PopupMenu popup = new PopupMenu(context1, holder.btnContextMenu);
 ////                if (newsFeedsObj.getCurrentUserID().equalsIgnoreCase())
 //        popup.getMenuInflater().inflate(R.menu.contextmenu_owner, popup.getMenu());
@@ -164,7 +221,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
 //        }else{
 //            imageView.setVisibility(View.GONE);
 //        }
-
+**/
 
     }
 

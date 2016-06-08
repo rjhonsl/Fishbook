@@ -24,7 +24,8 @@
                   android:text="  Comments"/>
 
     </LinearLayout>
-    <android.support.v7.widget.RecyclerView
+
+     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -43,23 +44,24 @@
 
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:hint="Write a comment..."
-                      android:paddingLeft="15dp"
-                      android:paddingRight="15dp"
-                      android:paddingTop="10dp"
-                      android:paddingBottom="10dp"
+                      android:paddingLeft="20dp"
+                      android:paddingRight="20dp"
+                      android:paddingTop="15dp"
+                      android:paddingBottom="15dp"
                       android:textSize="16sp"
                       android:maxLines="5"
                       android:layout_weight="1"
+
                       android:id="@+id/edtAddComment"
                       android:background="@color/transparent" />
 
-            <ImageButton android:layout_width="wrap_content"
-                         android:layout_height="match_parent"
-                         android:paddingLeft="5dp"
-                         android:paddingRight="5dp"
-                         android:id="@+id/btnAddcomment"
-                         android:background="@drawable/bg_material_transparent"
-                        android:src="@drawable/ic_send_black_24dp"/>
+            <ImageView android:layout_width="43dp"
+                       android:layout_height="match_parent"
+                       android:id="@+id/btnAddcomment"
+                       android:paddingRight="3dp"
+                       android:paddingLeft="3dp"
+                       android:background="@drawable/bg_material_transparent"
+                       android:src="@drawable/ic_send_black_24dp"/>
         </LinearLayout>
 
     </LinearLayout>

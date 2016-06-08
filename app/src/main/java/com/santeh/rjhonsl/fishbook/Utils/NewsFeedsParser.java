@@ -64,7 +64,7 @@ public class NewsFeedsParser {
 
 
                 /**
-                 * CONDITIONS FOR COMMENTS
+                 * CONDITIONS FOR CONTENTS
                  * */
                 if (obj.has("feedcontents_id")){
                     fbObj.setContent_id(obj.getString("feedcontents_id"));
@@ -212,6 +212,12 @@ public class NewsFeedsParser {
                     fbObj.setIsHogsActive(obj.getInt("hogs"));
                 }else {
                     fbObj.setIsHogsActive(0);
+                }
+
+                if (obj.has("commentcount")) {
+                    fbObj.setCommentCount(obj.getInt("commentcount"));
+                }else {
+                    fbObj.setCommentCount(0);
                 }
 
 

@@ -97,6 +97,13 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewAdapt
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final VarFishBook newsFeedsObj = newsFeedsList.get(position);
 
+        String commentLink = holder.txtComments.getText().toString();
+
+        if (newsFeedsObj.getCommentCount() > 0){
+            holder.txtComments.setText(commentLink+"("+newsFeedsObj.getCommentCount()+")");
+        }else{
+            holder.txtComments.setText(commentLink+"");
+        }
 
 
         holder.txtComments.setOnClickListener(new View.OnClickListener() {

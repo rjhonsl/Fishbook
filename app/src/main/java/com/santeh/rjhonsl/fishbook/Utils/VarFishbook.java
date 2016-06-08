@@ -17,6 +17,10 @@ public class VarFishBook extends Application {
     private int isAquaActive;
     private int isPetOneActive;
     private int isHogsActive;
+
+
+    private int commentCount;
+
     private String currentUserID;
     private String currentUserName;
     private String currentUserFirstname;
@@ -444,5 +448,13 @@ public class VarFishBook extends Application {
 
     public void setIsHogsActive(int isHogsActive) {
         this.isHogsActive = isHogsActive;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 }

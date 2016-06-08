@@ -39,7 +39,7 @@ public class Activity_PostText extends AppCompatActivity {
         setContentView(R.layout.activity_posttext);
         activity = this;
         context = Activity_PostText.this;
-        Helper.random.hideKeyboardOnLoad(this);
+        Helper.random.hideKeyboard(this);
 
         fusedLocation = new FusedLocation(context, activity);
         fusedLocation.connectToApiClient();
