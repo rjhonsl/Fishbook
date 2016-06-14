@@ -402,8 +402,6 @@ public class Helper {
 
 
 
-
-
     public static class convert{
 
         public static long DateToLong(int dd, int MM, int yyyy){
@@ -461,20 +459,6 @@ public class Helper {
             return formatter.format(calendar.getTime());
         }
 
-        public static String LongToDate_ShortGregorian(long dateInMillis){
-            SimpleDateFormat formatter = new SimpleDateFormat("MMM dd");
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(dateInMillis);
-            return formatter.format(calendar.getTime());
-        }
-
-        public static String LongToDate_Gregorian(long dateInMillis){
-            SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy");
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(dateInMillis);
-            return formatter.format(calendar.getTime());
-        }
-
         public static String LongToDateTime_Gregorian(long dateInMillis){
             SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy hh:mmaa");
             Calendar calendar = Calendar.getInstance();
@@ -484,13 +468,6 @@ public class Helper {
 
         public static String LongToDateTime_DBFormat(long dateInMillis){
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(dateInMillis);
-            return formatter.format(calendar.getTime());
-        }
-
-        public static String LongToTime12Hour(long dateInMillis){
-            SimpleDateFormat formatter = new SimpleDateFormat("HH:mmaa");
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(dateInMillis);
             return formatter.format(calendar.getTime());
@@ -525,6 +502,28 @@ public class Helper {
             return new int[]{month,day,year};
         }
 
+        public static String LongToTime12Hour(long dateInMillis){
+            SimpleDateFormat formatter = new SimpleDateFormat("HH:mmaa");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(dateInMillis);
+            return formatter.format(calendar.getTime());
+        }
+
+        public static String LongToDate_ShortGregorian(long dateInMillis){
+            SimpleDateFormat formatter = new SimpleDateFormat("MMM dd");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(dateInMillis);
+            return formatter.format(calendar.getTime());
+        }
+
+        public static String LongToDate_Gregorian(long dateInMillis){
+            SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(dateInMillis);
+            return formatter.format(calendar.getTime());
+        }
+
+
 
 
         public static int getDateDifferenceHour(long start, long end){
@@ -543,6 +542,32 @@ public class Helper {
 //            Interval interval = new Interval(start, end);
 
             return Minutes.minutesBetween(dateend,datestart).getMinutes();
+        }
+
+
+        public static String getDateTimePassed(String endTime){
+            int difInHour = Helper.convert.getDateDifferenceHour(System.currentTimeMillis(), Long.valueOf(endTime));
+            int difInMinutes = Helper.convert.getDateDifferenceMinute(System.currentTimeMillis(), Long.valueOf(endTime));
+            String time = "";
+
+            if (difInMinutes  <= 0 ){
+                time = "Just now";
+            }else if (difInMinutes  < 2 ){
+                time = difInMinutes + " minute ago";
+            }else if(difInMinutes < 60){
+                time = difInMinutes +  " minutes ago";
+            }else if(difInHour == 1){
+                time = difInHour + " hour ago";
+            }else if(difInHour < 24){
+                time = difInHour + " hours ago";
+            }
+            else if (difInHour < 48){
+                time = "Yesterday "+ Helper.convert.LongToTime12Hour(Long.valueOf(endTime));
+            }else {
+                time = Helper.convert.LongToDate_ShortGregorian(Long.valueOf(endTime));
+            }
+
+            return time;
         }
 
     }

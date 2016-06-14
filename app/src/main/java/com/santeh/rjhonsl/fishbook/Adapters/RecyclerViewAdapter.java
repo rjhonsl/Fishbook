@@ -165,18 +165,18 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewAdapt
         }
 
 
-        if (!newsFeedsObj.getMain_fetchat().equalsIgnoreCase("")){
+        if (!newsFeedsObj.getMain_fetchat().equalsIgnoreCase("")  && !newsFeedsObj.getMain_fetchat().trim().equalsIgnoreCase("0")){
             holder.txtLocation.setText(newsFeedsObj.getMain_fetchat());
         }else{
             holder.txtLocation.setText("");
         }
 
         holder.txtFullName.setText(newsFeedsObj.getCurrentUserFirstname() + " " + newsFeedsObj.getCurrentUserLastname());
-        holder.txtDateTime.setText(Helper.convert.LongToDateTime_Gregorian(Long.valueOf(newsFeedsObj.getMain_date())));
+        holder.txtDateTime.setText(Helper.convert.getDateTimePassed(newsFeedsObj.getMain_date()));
         final ImageView imageView = holder.imagePreview;
 
 
-        if (newsFeedsObj.getContent_type().equalsIgnoreCase( MainActivity.CONTENT_IMAGE+"")){
+        if (newsFeedsObj.getContent_type().equalsIgnoreCase(MainActivity.CONTENT_IMAGE+"")){
             final Bitmap bitmap = imageCache.get(Integer.valueOf(newsFeedsObj.getContent_id()));
             imageView.setVisibility(View.VISIBLE);
 
@@ -198,6 +198,8 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewAdapt
                                     public void onClick(View v) {
                                         Intent intent = new Intent(context1, Activity_ViewImage.class);
                                         intent.putExtra("imagename", newsFeedsObj.getContent_imageUrl());
+                                        intent.putExtra("postid", newsFeedsObj.getContent_mainid());
+                                        intent.putExtra("commentcount", newsFeedsObj.getCommentCount());
                                         Log.d("ImageView", "Start ImageView");
                                         context1.startActivity(intent);
                                     }

@@ -105,7 +105,7 @@ public class MainActivity  extends AppCompatActivity {
         registerForContextMenu(recyclerView);
 
         //add ItemDecoration
-        int VERTICAL_ITEM_SPACE = 40;
+        int VERTICAL_ITEM_SPACE = 30;
         recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(VERTICAL_ITEM_SPACE));
 //        //or
 //        recyclerView.addItemDecoration(new DividerItemDecoration(activity));

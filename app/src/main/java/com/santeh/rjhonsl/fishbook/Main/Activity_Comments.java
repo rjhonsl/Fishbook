@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -44,6 +45,8 @@ public class Activity_Comments extends AppCompatActivity {
     private RecyclerView rvComments;
     private CommentsAdapter rcAdapter;
 
+    private LinearLayout ll_top_comments;
+
     String postid;
     EditText edtAddComment;
     ImageView btnAddComment;
@@ -66,6 +69,7 @@ public class Activity_Comments extends AppCompatActivity {
         pd.setIndeterminate(true);
         pd.setCancelable(true);
 
+        ll_top_comments = (LinearLayout) findViewById(R.id.ll_top_comments);
         rvComments = (RecyclerView) findViewById(R.id.rv_comments);
         mLinearLayoutManager = new LinearLayoutManager(activity);
         rvComments.setLayoutManager(mLinearLayoutManager);
@@ -76,6 +80,13 @@ public class Activity_Comments extends AppCompatActivity {
 
 
 //        Helper.toast.short_(activity, postid);
+
+        ll_top_comments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         btnAddComment = (ImageView) findViewById(R.id.btnAddcomment);
         edtAddComment = (EditText) findViewById(R.id.edtAddComment);
@@ -207,7 +218,10 @@ public class Activity_Comments extends AppCompatActivity {
                             edtAddComment.setText("");
                             Helper.random.hideKeyboard(activity);
                             requestCommentsData();
-                            rvComments.scrollToPosition(newsFeedList.size()-1);
+                            if (newsFeedList!= null){
+                                rvComments.scrollToPosition(newsFeedList.size()-1);
+                            }
+
                             pd.dismiss();
                         }
                     }

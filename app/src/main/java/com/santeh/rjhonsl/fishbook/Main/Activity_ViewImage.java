@@ -20,7 +20,6 @@ import com.android.volley.toolbox.Volley;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.santeh.rjhonsl.fishbook.R;
-import com.santeh.rjhonsl.fishbook.Utils.Helper;
 
 
 /**
@@ -56,11 +55,15 @@ public class Activity_ViewImage extends FragmentActivity {
         imageView.setZoomEnabled(true);
         imageView.setImage(ImageSource.resource(R.drawable.ic_photo_512x));
 
+//        intent.putExtra("postid", newsFeedsObj.getContent_mainid());
+//        intent.putExtra("commentcount", newsFeedsObj.getCommentCount());
+        final String postid = receivedIntent.getStringExtra("postid");
+        int commentcount = receivedIntent.getIntExtra("commentcount", 0);
 
         if (receivedIntent.hasExtra("imagename")){
             filename =  receivedIntent.getStringExtra("imagename");
             retrieveImage(baseImageFolder + filename);
-            Helper.toast.long_(activity, "Retrieving Image");
+//            Helper.toast.long_(activity, "Retrieving Image");
         }
 
         llTopViewImage.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +76,10 @@ public class Activity_ViewImage extends FragmentActivity {
         llcomment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Helper.toast.short_(activity, "comment was selected");
+//                Helper.toast.short_(activity, "comment was selected");
+                Intent intent = new Intent(context, Activity_Comments.class);
+                intent.putExtra("postid", postid+"");
+                context.startActivity(intent);
             }
         });
 

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -13,15 +14,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.santeh.rjhonsl.fishbook.APIs.MyVolleyAPI;
 import com.santeh.rjhonsl.fishbook.R;
 import com.santeh.rjhonsl.fishbook.Utils.Helper;
 import com.santeh.rjhonsl.fishbook.Utils.VarFishBook;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by rjhonsl on 5/18/2016.
@@ -41,6 +51,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
         public TextView txtDateTime, txtFullName, txtComment;
         public ImageView imagePreview;
         public ImageButton btnContextMenu;
+        public LinearLayout ll_commentContents;
         public View view;
 
         public MyViewHolder(View view) {
@@ -51,6 +62,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
             txtComment = (TextView) view.findViewById(R.id.txtComment);
             imagePreview = (ImageView) view.findViewById(R.id.img_userpic);
             btnContextMenu = (ImageButton) view.findViewById(R.id.btnOptions);
+            ll_commentContents = (LinearLayout) view.findViewById(R.id.ll_item_comments);
 
             this.view = view;
         }
@@ -83,54 +95,48 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final VarFishBook newsFeedsObj = newsFeedsList.get(position);
-        int difInHour = Helper.convert.getDateDifferenceHour(System.currentTimeMillis(), Long.valueOf(newsFeedsObj.getComment_dateCommented()));
-        int difInMinutes = Helper.convert.getDateDifferenceMinute(System.currentTimeMillis(), Long.valueOf(newsFeedsObj.getComment_dateCommented()));
-        String time = "";
 
-        if (difInMinutes  == 0 ){
-            time = "Just now";
-        }else if (difInMinutes  < 2 ){
-            time = difInMinutes + " minute ago";
-        }else if(difInMinutes < 60){
-            time = difInHour +  " minutes ago";
-        }else if(difInHour == 1){
-            time = difInHour + " hour ago";
-        }else if(difInHour < 24){
-            time = difInHour + " hours ago";
-        }
-        else if (difInHour < 48){
-            time = "Yesterday "+ Helper.convert.LongToTime12Hour(Long.valueOf(newsFeedsObj.getComment_dateCommented()));
-        }else {
-            time = Helper.convert.LongToDate_ShortGregorian(Long.valueOf(newsFeedsObj.getComment_dateCommented()));
-        }
-
-        holder.txtDateTime.setText(time);
+        holder.txtDateTime.setText(Helper.convert.getDateTimePassed(newsFeedsObj.getComment_dateCommented()));
 
         holder.txtFullName.setText(newsFeedsObj.getCurrentUserFirstname() + " " + newsFeedsObj.getCurrentUserLastname());
-
-        holder.txtComment.setText(newsFeedsObj.getComment_content());
-        holder.btnContextMenu.setOnClickListener(new View.OnClickListener() {
+        holder.txtFullName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(context1, holder.btnContextMenu);
-                popup.getMenuInflater().inflate(R.menu.contextmenu_owner, popup.getMenu());
+                Helper.toast.short_(activity1, newsFeedsObj.getCurrentUserFirstname() + " " + newsFeedsObj.getCurrentUserLastname());
+            }
+        });
+
+        holder.txtComment.setText(newsFeedsObj.getComment_content());
+        holder.ll_commentContents.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                PopupMenu popup = new PopupMenu(context1, holder.txtComment);
+                popup.getMenuInflater().inflate(R.menu.contextmenu_comment_owner, popup.getMenu());
 
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
-//                        if (item.getItemId() == R.id.itmDelete) {
+                        if (item.getItemId() == R.id.itmDelete) {
+                            pd = new ProgressDialog(context1);
+                            pd.setIndeterminate(false);
+                            pd.setMessage("Removing comment...");
+                            pd.setCancelable(false);
+                            pd.show();
+                            removeComment(context1,newsFeedsObj.getComment_Id(), position);
+                        }else if (item.getItemId() == R.id.itmEdit) {
 //                            pd = new ProgressDialog(context1);
 //                            pd.setIndeterminate(false);
 //                            pd.setMessage("Removing Post...");
 //                            pd.setCancelable(false);
 //                            pd.show();
-//                        }
+                        }
                         return true;
                     }
                 });
                 popup.show();
-
+                return false;
             }
         });
+
 //
 //        txtDateTime = (TextView) view.findViewById(R.id.txtDateTime);
 //        txtFullName = (TextView) view.findViewById(R.id.txtfullname);
@@ -241,44 +247,43 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
 
 
 
-//    private void RemovePost(final Context context, final String rowID, final int position, final String imageName){
-//        StringRequest postRequest = new StringRequest(Request.Method.POST,"http://www.santeh-webservice.com/images/androidimageupload_fishbook/"+ "FBDeletePost.php",
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(final String response) {
-//                        Log.d("PHP DELETE", response);
-//                        pd.dismiss();
-//                        if (response.substring(1,2).equalsIgnoreCase("1")){
-//                            removeAt(position);
-//
-//                            Toast.makeText(context, "Post has been removed", Toast.LENGTH_SHORT).show();
-//                        }else{
-//                            Toast.makeText(context, "Failed to remove", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Toast.makeText(context, "Failed to remove", Toast.LENGTH_SHORT).show();
-//                        pd.dismiss();
-//                    }
-//                }) {
-//            @Override
-//            protected Map<String, String> getParams() {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("id", rowID);
-//                params.put("username", "tsraqua");
-//                params.put("password", "tsraqua");
-//                params.put("imagename", imageName);
-//                params.put("deviceid", Helper.getDeviceInfo.getMacAddress(context));
-//
-//                return params;
-//            }
-//        };
-//
-//        MyVolleyAPI api = new MyVolleyAPI();
-//        api.addToReqQueue(postRequest, context);
-//    }
+    private void removeComment(final Context context, final String rowID, final int position){
+        StringRequest postRequest = new StringRequest(Request.Method.POST,Helper.variables.sourceAddress_goDaddy+ "FBDeleteComment.php",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(final String response) {
+                        Log.d("PHP DELETE", response);
+                        pd.dismiss();
+                        if (response.substring(1,2).equalsIgnoreCase("1")){
+                            removeAt(position);
+                            Toast.makeText(context, "Comment has been removed", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(context, "Error removing", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("PHP DELETE", error.toString());
+                        Toast.makeText(context, "Error removing", Toast.LENGTH_SHORT).show();
+                        pd.dismiss();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("id", rowID);
+                params.put("username", "tsraqua");
+                params.put("password", "tsraqua");
+                params.put("deviceid", Helper.getDeviceInfo.getMacAddress(context));
+
+                return params;
+            }
+        };
+
+        MyVolleyAPI api = new MyVolleyAPI();
+        api.addToReqQueue(postRequest, context);
+    }
 
 }
